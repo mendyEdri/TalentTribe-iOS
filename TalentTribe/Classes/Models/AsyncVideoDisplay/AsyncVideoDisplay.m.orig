@@ -1,0 +1,138 @@
+//
+//  AsyncVideoDisplay.m
+//  TalentTribe
+//
+//  Created by Mendy on 16/11/2015.
+//  Copyright © 2015 OnOApps. All rights reserved.
+//
+
+#import "AsyncVideoDisplay.h"
+
+@interface AsyncVideoDisplay ()
+@property (strong, nonatomic) NSMutableArray *videoPlayers;
+@property (strong, nonatomic) NSMutableArray *urls;
+@end
+
+void (^playerReady)(AVPlayerLayer *playerLayer);
+
+@implementation AsyncVideoDisplay
+
+- (instancetype)initWithCompaniesArray:(NSArray *)companies {
+    self = [super init];
+    if (self) {
+        [self createVideoPlayersForCompanies:companies];
+    }
+    return self;
+}
+
+- (void)updateVidoePlayerWithCompanies:(NSArray *)companies {
+    [self createVideoPlayersForCompanies:companies];
+}
+
+- (void)createVideoPlayersForCompanies:(NSArray *)companies {
+    for (Company *company in companies) {
+        for (Story *story in company.stories) {
+            if (story.videoLink && ![self.urls containsObject:story.videoLink]) {
+                [self createPlayerWithUrl:story.videoLink];
+                if (!self.urls) {
+                    self.urls = [NSMutableArray new];
+                }
+                [self.urls addObject:story.videoLink];
+            }
+        }
+    }
+}
+
+- (void)createPlayerWithUrl:(NSString *)urlString {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+    dispatch_async(queue, ^{
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            AVPlayerItem *avPlayerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
+            AVPlayer *avPlayer = [AVPlayer playerWithPlayerItem:avPlayerItem];
+            [avPlayer addObserver:self forKeyPath:@"status" options:0 context:nil];
+        });
+    });
+}
+
+- (void)avPlayerLayerForUrl:(NSString *)url withCompletion:(SimpleResultBlock)completion {
+    __block NSString *blockUrl = url;
+    for (AVPlayerLayer *playerLayer in self.videoPlayers) {
+        if ([[self urlStringOfCurrentlyPlayingInPlayer:playerLayer.player] isEqualToString:url]) {
+            DLog(@"Asked for url: %@ got playr with url %@", blockUrl, [self urlStringOfCurrentlyPlayingInPlayer:playerLayer.player]);
+            if (completion) {
+                completion(playerLayer, nil);
+            }
+        }
+    }
+
+    playerReady = ^(AVPlayerLayer *playerLayer) {
+        if (completion) {
+            completion(playerLayer, nil);
+        }
+    };
+}
+
+- (AVPlayerLayer *)playerLayerWithPlayer:(AVPlayer *)avPlayer {
+    AVPlayerLayer *avPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:avPlayer];
+    avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    avPlayerLayer.frame = CGRectMake(0, 0, CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetWidth([UIScreen mainScreen].bounds));
+    avPlayerLayer.backgroundColor = [UIColor blackColor].CGColor;
+    return avPlayerLayer;
+}
+
+- (void)pausePlayerWithUrl:(NSString *)url {
+    [self avPlayerLayerForUrl:url withCompletion:^(id result, NSError *error) {
+        AVPlayerLayer *layer = result;
+        [layer.player pause];
+    }];
+}
+
+- (void)playPlayerWithUrl:(NSString *)url {
+    [self avPlayerLayerForUrl:url withCompletion:^(id result, NSError *error) {
+        AVPlayerLayer *layer = result;
+        [layer.player play];
+    }];
+}
+
+- (NSString *)urlStringOfCurrentlyPlayingInPlayer:(AVPlayer *)player {
+    AVAsset *currentPlayerAsset = player.currentItem.asset;
+    if (![currentPlayerAsset isKindOfClass:AVURLAsset.class]) {
+        return nil;
+    }
+    return [[(AVURLAsset *)currentPlayerAsset URL] absoluteString];
+}   
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [object removeObserver:self forKeyPath:@"status"];
+    if ([object isKindOfClass:[AVPlayer class]] && [keyPath isEqualToString:@"status"]) {
+        AVPlayer *avPlayer = object;
+        avPlayer.muted = YES;
+        avPlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
+        if (!self.videoPlayers) {
+            self.videoPlayers = [NSMutableArray new];
+        }
+        
+        if (avPlayer.status == AVPlayerStatusReadyToPlay) {
+            AVPlayerLayer *layer = [self playerLayerWithPlayer:avPlayer];
+            NSString *readyVideoString = [self urlStringOfCurrentlyPlayingInPlayer:avPlayer];
+            DLog(@"Video Ready %@", readyVideoString);
+            [self.videoPlayers addObject:layer];
+<<<<<<< HEAD
+            if (self.stateHandler) {
+                self.stateHandler(readyVideoString);
+=======
+            if (playerReady) {
+                playerReady(layer);
+>>>>>>> mendy
+            }
+        }
+    }
+}
+
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:@"status"];
+}
+
+@end

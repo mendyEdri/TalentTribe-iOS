@@ -1,0 +1,273 @@
+//
+//  LoginResetViewController.swift
+//  TalentTribe
+//
+//  Created by Bogdan Andresyuk on 8/31/15.
+//  Copyright (c) 2015 OnOApps. All rights reserved.
+//
+
+import Foundation
+
+class LoginResetViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate {
+    
+    @IBOutlet var mainContainer: UIView!
+    
+    @IBOutlet var resetButton: UIButton!
+    @IBOutlet var resetField: TTUnderlinedTextField!
+    
+    @IBOutlet var doneLabel: UILabel!
+    @IBOutlet var doneButton: UIButton!
+    
+    @IBOutlet var resetBottomSpace: NSLayoutConstraint!
+
+    //MARK: - Initialization
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    //MARK: - Interface actions
+    
+    @IBAction func resetButtonPressed(sender: UIButton) {
+        if (!DataManager.validateEmail(resetField.text)) {
+            resetField.setHighlightedBottomLineColor()
+        } else {
+            self.performResetRequest()
+        }
+    }
+    
+    @IBAction func doneButtonPressed(sender: UIButton) {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    @IBAction func backButtonPressed(sender: UIButton) {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    @IBAction func closeButtonPressed(sender: UIButton) {
+        DataManager.sharedManager().clearCurrentUser()
+        DataManager.sharedManager().isAnonymous = true
+        self.moveToMainScreen()
+    }
+    
+    //MARK: - Keyboard handling
+    
+    func keyboardWillShow(notif: NSNotification) {
+        self.handleKeyboardNotification(notif, show: true)
+    }
+    
+    func keyboardWillHide(notif: NSNotification) {
+        self.handleKeyboardNotification(notif, show: false)
+    }
+    
+    func handleKeyboardNotification(notif: NSNotification, show: Bool) {
+        
+        var dict:NSDictionary = notif.userInfo!
+        var keyboardFrame:CGRect = dict.valueForKey(UIKeyboardFrameEndUserInfoKey)!.CGRectValue as CGRect
+        var duration: NSTimeInterval = dict[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue!
+        let options = UIViewAnimationOptions(rawValue: UInt((dict[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+        
+        self.view.layoutIfNeeded()
+        
+        if (show) {
+            self.updateBottomSpace(CGRectGetHeight(keyboardFrame))
+            UIView.animateWithDuration(duration, animations: { () -> Void in
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+    
+    func updateBottomSpace(height: CGFloat) {
+        self.resetBottomSpace.constant = height + 30.0
+    }
+    
+    //MARK: - UITextField delegate
+    
+    @IBAction func textFieldInputChanged(textField: UITextField) {
+        let lineTextField = textField as? TTUnderlinedTextField
+        if (lineTextField != nil) {
+            lineTextField?.setDefaultBottomLineColor()
+        }
+        enableButton(self.resetButton, enabled:DataManager.validateEmail(resetField.text))
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        let lineTextField = textField as? TTUnderlinedTextField
+        if (lineTextField != nil) {
+            lineTextField?.setDefaultBottomLineColor()
+        }
+        enableButton(self.resetButton, enabled:DataManager.validateEmail(resetField.text))
+    }
+    
+    //MARK: - Signup handling
+    
+    struct Loading {
+        static var active = false
+    }
+    
+    func synced(lock: AnyObject, closure: () -> ()) {
+        objc_sync_enter(lock)
+        closure()
+        objc_sync_exit(lock)
+    }
+    
+    func showError(error: String) {
+        let alert = UIAlertView(title: error, message: nil, delegate: nil, cancelButtonTitle: "Ok")
+        alert.show()
+    }
+    
+    func moveToMainScreen() {
+        if (self.isModal() == true) {
+            self.dismissViewControllerAnimated(true, completion: nil);
+        } else {
+            self.rootNavigationController!.moveToTabBar(false)
+        }
+    }
+    
+    func showDoneView(animated: Bool) {
+        self.view.userInteractionEnabled = false
+        self.view.endEditing(true)
+<<<<<<< HEAD
+        
+        self.doneLabel.text = NSString(format:"A password reset sent to:\n%@", self.resetField.text!) as String
+        
+        self.doneLabel.alpha = 0.0
+        self.doneButton.alpha = 0.0
+        
+        self.doneLabel.hidden = false
+        self.doneButton.hidden = false
+        
+        UIView.animateWithDuration((animated ? 0.5 : 0.0), animations: { () -> Void in
+=======
+        self.doneLabel.text = NSString(format:"A password reset sent to:\n%@", self.resetField.text) as String
+
+        UIView.animateWithDuration((animated ? 0.4 : 0.0), animations: { () -> Void in
+>>>>>>> bogdan
+            self.resetField.alpha = 0.0
+            self.resetButton.alpha = 0.0
+        }) { (finished: Bool) -> Void in
+            
+            self.doneLabel.hidden = false
+            self.doneButton.hidden = false
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                self.mainContainer.alpha = 1
+                self.doneLabel.alpha = 1.0
+                self.doneButton.alpha = 1.0
+                }) { (finished:Bool) -> Void in
+                    self.view.userInteractionEnabled = true
+            }
+        }
+    }
+    
+    func performResetRequest()
+    {
+        synced(self)
+            {
+            if (!Loading.active)
+            {
+                Loading.active = true
+                self.view.endEditing(true)
+                self.hideAllContainers(true);
+                TTActivityIndicator.showOnMainWindowOnTop()
+                DataManager.sharedManager().recoverPasswordWithEmail(self.resetField.text, completionHandler: { (success, error) -> Void in
+                    TTActivityIndicator.dismiss()
+                    Loading.active = false
+                    if(success && error == nil)
+                    {
+                        self.showDoneView(true)
+                    }
+                    else
+                    {
+                        self.showMainContainer(true)
+                    }
+                })
+            }
+        }
+    }
+    
+    //MARK Containers appearance
+    
+    func showMainContainer(animated: Bool) {
+        self.mainContainer.alpha = 0.0
+        self.mainContainer.hidden = false
+        UIView.animateWithDuration(animated ? 0.5 : 0.0, animations: { () -> Void in
+            self.mainContainer.alpha = 1.0
+            })   { (finished: Bool) -> Void in
+        }
+    }
+    
+    func hideAllContainers(animated: Bool) {
+        UIView.animateWithDuration(animated ? 0.5 : 0.0, animations: { () -> Void in
+            self.mainContainer.alpha = 0.0
+            })   { (finished: Bool) -> Void in
+        }
+    }
+    
+    func setupKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func setupRoundedButtons() {
+        resetButton.layer.cornerRadius = 3.5
+        resetButton.layer.masksToBounds = true
+    }
+    
+    func setupPlaceholders() {
+        resetField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSFontAttributeName : resetField.font!, NSForegroundColorAttributeName : UIColor.whiteColor()])
+    }
+    
+    func setupViews() {
+        setupPlaceholders()
+        setupRoundedButtons()
+    }
+    
+    func enableButton(button: UIButton!, enabled: Bool) {
+        if (enabled) {
+            button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        } else {
+            button.setTitleColor(UIColor(red: 220.0 / 255.0, green: 220.0 / 255.0, blue: 220.0 / 255.0, alpha: 1.0), forState: .Normal)
+        }
+    }
+    
+    //MARK: UINavigationController delegate
+    
+    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if (operation == .Push || operation == .Pop) {
+            return FadeAnimator()
+        }
+        return nil
+    }
+    
+    //MARK: - View lifeCycle
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        if (KeyboardStateListener.sharedListener().keyboardShown == true) {
+            self.updateBottomSpace(CGRectGetHeight(KeyboardStateListener.sharedListener().keyboardFrame))
+        }
+        self.resetField.becomeFirstResponder()
+        self.navigationController?.delegate = self
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        //self.navigationController?.delegate = nil
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.setupViews()
+        self.setupKeyboardNotifications()
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+}

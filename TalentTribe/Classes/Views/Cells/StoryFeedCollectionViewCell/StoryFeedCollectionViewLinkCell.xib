@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="TitilliumWeb-Light.ttf">
+            <string>TitilliumWeb-Light</string>
+            <string>TitilliumWeb-Light</string>
+            <string>TitilliumWeb-Light</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-Regular.ttf">
+            <string>TitilliumWeb-Regular</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-SemiBold.ttf">
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="linkCell" id="lNx-4b-9eY" customClass="StoryFeedCollectionViewLinkCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8G-7O-gz0" userLabel="Container">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="F5g-wV-Bdr">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                                <animations/>
+                            </imageView>
+                            <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NHt-As-4SL" userLabel="Author Container">
+                                <rect key="frame" x="15" y="65" width="290" height="20"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y8R-lr-gHf" userLabel="Avatar image" customClass="TTRoundedBorderImageView">
+                                        <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="9U0-sR-5bw"/>
+                                            <constraint firstAttribute="width" constant="20" id="uPZ-f4-q3U"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mFc-01-6D2" customClass="TTShadowLabel">
+                                        <rect key="frame" x="25" y="0.0" width="265" height="20"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="13"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Y8R-lr-gHf" firstAttribute="top" secondItem="NHt-As-4SL" secondAttribute="top" id="0Wq-qe-jQo"/>
+                                    <constraint firstItem="Y8R-lr-gHf" firstAttribute="leading" secondItem="NHt-As-4SL" secondAttribute="leading" id="JgR-iI-qtv"/>
+                                    <constraint firstAttribute="bottom" secondItem="mFc-01-6D2" secondAttribute="bottom" id="L2d-z8-QEo"/>
+                                    <constraint firstAttribute="trailing" secondItem="mFc-01-6D2" secondAttribute="trailing" id="XJK-Sj-ILX"/>
+                                    <constraint firstItem="mFc-01-6D2" firstAttribute="leading" secondItem="Y8R-lr-gHf" secondAttribute="trailing" constant="5" id="f4e-ra-h2w"/>
+                                    <constraint firstAttribute="height" constant="20" id="ts0-xg-9P7"/>
+                                    <constraint firstItem="mFc-01-6D2" firstAttribute="top" secondItem="NHt-As-4SL" secondAttribute="top" id="yhS-tz-Qs4"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vQj-dA-VBh" customClass="TTDynamicLabel">
+                                <rect key="frame" x="5" y="93" width="310" height="100"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" priority="800" constant="106" id="tJH-mh-EP1"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="TitilliumWeb-Light" family="Titillium Web" pointSize="27"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="–" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ou1-5k-KQ4" userLabel="Dash" customClass="TTShadowLabel">
+                                <rect key="frame" x="5" y="205" width="50" height="20"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="SLi-Ld-tzi"/>
+                                    <constraint firstAttribute="height" constant="20" id="dgI-7V-xgr"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="28"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="thelink.com" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RnT-1G-La7" customClass="TTShadowLabel">
+                                <rect key="frame" x="5" y="230" width="300" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Y4b-OR-ggP"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="13"/>
+                                <color key="textColor" red="0.15686274510000001" green="0.74509803919999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t9J-MS-LWx" userLabel="Buttons Container">
+                                <rect key="frame" x="0.0" y="270" width="320" height="50"/>
+                                <subviews>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kIu-F2-Ct8" userLabel="Comment button">
+                                        <rect key="frame" x="0.0" y="0.0" width="70" height="50"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="80" id="mfr-tX-3hF"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="TitilliumWeb-Light" family="Titillium Web" pointSize="12"/>
+                                        <inset key="titleEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" image="comment">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" red="0.10737847220000001" green="0.75294117650000003" blue="0.89256365739999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="commentButtonPressed:" destination="lNx-4b-9eY" eventType="touchUpInside" id="qML-Uk-DAa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZDz-OC-y0b" userLabel="Share button">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="8GB-wD-3yz"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="TitilliumWeb-Light" family="Titillium Web" pointSize="12"/>
+                                        <inset key="titleEdgeInsets" minX="8" minY="5" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" image="share">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" red="0.10737847220000001" green="0.75294117650000003" blue="0.89256365739999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="shareButtonPressed:" destination="lNx-4b-9eY" eventType="touchUpInside" id="Iey-G5-LQk"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="ZDz-OC-y0b" firstAttribute="leading" secondItem="t9J-MS-LWx" secondAttribute="leading" id="BCt-er-yN6"/>
+                                    <constraint firstAttribute="width" secondItem="ZDz-OC-y0b" secondAttribute="width" multiplier="4.5714" priority="800" id="FCn-2s-nUa"/>
+                                    <constraint firstItem="kIu-F2-Ct8" firstAttribute="top" secondItem="t9J-MS-LWx" secondAttribute="top" id="GdD-uW-vcx"/>
+                                    <constraint firstAttribute="width" secondItem="kIu-F2-Ct8" secondAttribute="width" multiplier="4.5714" priority="800" id="QHY-Y2-lw4"/>
+                                    <constraint firstAttribute="bottom" secondItem="ZDz-OC-y0b" secondAttribute="bottom" id="eTD-fC-Rxx"/>
+                                    <constraint firstItem="ZDz-OC-y0b" firstAttribute="top" secondItem="t9J-MS-LWx" secondAttribute="top" id="fGf-Pl-h4G"/>
+                                    <constraint firstAttribute="bottom" secondItem="kIu-F2-Ct8" secondAttribute="bottom" id="gSW-DO-xef"/>
+                                    <constraint firstAttribute="height" constant="50" id="kTc-YN-VJA"/>
+                                    <constraint firstItem="kIu-F2-Ct8" firstAttribute="leading" secondItem="t9J-MS-LWx" secondAttribute="leading" id="sO1-nX-BaX"/>
+                                </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TjV-Jb-gyd" userLabel="Edit Container">
+                                <rect key="frame" x="190" y="280" width="120" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B9t-Yf-8Dj" userLabel="Remove">
+                                        <rect key="frame" x="0.0" y="0.0" width="70" height="30"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="70" id="lCO-wt-1rM"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="15"/>
+                                        <state key="normal" title="Remove"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mfH-xy-fS1" userLabel="Edit">
+                                        <rect key="frame" x="70" y="0.0" width="50" height="30"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="15"/>
+                                        <state key="normal" title="Edit"/>
+                                    </button>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="B9t-Yf-8Dj" firstAttribute="top" secondItem="TjV-Jb-gyd" secondAttribute="top" id="0XD-Qx-w6A"/>
+                                    <constraint firstAttribute="bottom" secondItem="mfH-xy-fS1" secondAttribute="bottom" id="52t-Vw-L7M"/>
+                                    <constraint firstItem="mfH-xy-fS1" firstAttribute="top" secondItem="TjV-Jb-gyd" secondAttribute="top" id="GlK-qD-Bux"/>
+                                    <constraint firstAttribute="width" constant="120" id="KfA-No-8gU"/>
+                                    <constraint firstAttribute="bottom" secondItem="B9t-Yf-8Dj" secondAttribute="bottom" id="RY0-1n-4vP"/>
+                                    <constraint firstItem="B9t-Yf-8Dj" firstAttribute="leading" secondItem="TjV-Jb-gyd" secondAttribute="leading" id="Vkd-PY-REM"/>
+                                    <constraint firstItem="mfH-xy-fS1" firstAttribute="leading" secondItem="B9t-Yf-8Dj" secondAttribute="trailing" id="XWA-X5-63t"/>
+                                    <constraint firstAttribute="height" constant="30" id="gWg-Hw-g5N"/>
+                                    <constraint firstAttribute="trailing" secondItem="mfH-xy-fS1" secondAttribute="trailing" id="nmL-Ig-pB2"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ou1-5k-KQ4" firstAttribute="top" secondItem="vQj-dA-VBh" secondAttribute="bottom" constant="12" id="4Ke-uK-aQG"/>
+                            <constraint firstAttribute="bottom" secondItem="TjV-Jb-gyd" secondAttribute="bottom" constant="10" id="7Bp-zK-2kg"/>
+                            <constraint firstItem="F5g-wV-Bdr" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" id="7tc-Lv-C1u"/>
+                            <constraint firstAttribute="trailing" secondItem="NHt-As-4SL" secondAttribute="trailing" constant="15" id="Bra-Lf-qk9"/>
+                            <constraint firstAttribute="trailing" secondItem="vQj-dA-VBh" secondAttribute="trailing" constant="5" id="H4F-EI-lsN"/>
+                            <constraint firstAttribute="bottom" secondItem="t9J-MS-LWx" secondAttribute="bottom" id="I2x-tM-RFe"/>
+                            <constraint firstAttribute="trailing" secondItem="F5g-wV-Bdr" secondAttribute="trailing" id="RGD-KD-0qq"/>
+                            <constraint firstItem="NHt-As-4SL" firstAttribute="top" relation="greaterThanOrEqual" secondItem="h8G-7O-gz0" secondAttribute="top" constant="65" id="Shd-Vn-EFz"/>
+                            <constraint firstAttribute="trailing" secondItem="t9J-MS-LWx" secondAttribute="trailing" id="Syc-mK-6js"/>
+                            <constraint firstItem="t9J-MS-LWx" firstAttribute="top" secondItem="RnT-1G-La7" secondAttribute="bottom" constant="10" id="TQA-iQ-VHy"/>
+                            <constraint firstItem="NHt-As-4SL" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" constant="15" id="ZAB-87-ZCB"/>
+                            <constraint firstItem="RnT-1G-La7" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" constant="5" id="aCo-Qa-h6q"/>
+                            <constraint firstItem="RnT-1G-La7" firstAttribute="top" secondItem="Ou1-5k-KQ4" secondAttribute="bottom" constant="5" id="bca-kQ-Whf"/>
+                            <constraint firstAttribute="bottom" secondItem="F5g-wV-Bdr" secondAttribute="bottom" id="diJ-uz-Rgl"/>
+                            <constraint firstItem="t9J-MS-LWx" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" id="ffl-Xl-fJN"/>
+                            <constraint firstAttribute="trailing" secondItem="RnT-1G-La7" secondAttribute="trailing" constant="15" id="qJn-aw-bdv"/>
+                            <constraint firstItem="F5g-wV-Bdr" firstAttribute="top" secondItem="h8G-7O-gz0" secondAttribute="top" id="rdI-P5-9vo"/>
+                            <constraint firstItem="Ou1-5k-KQ4" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" constant="5" id="uwq-F3-7Li"/>
+                            <constraint firstItem="vQj-dA-VBh" firstAttribute="top" secondItem="NHt-As-4SL" secondAttribute="bottom" constant="8" id="v67-cu-cN9"/>
+                            <constraint firstItem="vQj-dA-VBh" firstAttribute="leading" secondItem="h8G-7O-gz0" secondAttribute="leading" constant="5" id="wda-8c-6mk"/>
+                            <constraint firstAttribute="trailing" secondItem="TjV-Jb-gyd" secondAttribute="trailing" constant="10" id="z3c-kU-BLW"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <animations/>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <animations/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="h8G-7O-gz0" secondAttribute="bottom" id="TCi-D5-m5s"/>
+                <constraint firstAttribute="trailing" secondItem="h8G-7O-gz0" secondAttribute="trailing" id="XoN-aC-mP1"/>
+                <constraint firstItem="h8G-7O-gz0" firstAttribute="top" secondItem="lNx-4b-9eY" secondAttribute="top" id="YDp-nK-0NA"/>
+                <constraint firstItem="h8G-7O-gz0" firstAttribute="leading" secondItem="lNx-4b-9eY" secondAttribute="leading" id="uIs-pd-O0J"/>
+            </constraints>
+            <connections>
+                <outlet property="authorContainer" destination="NHt-As-4SL" id="cM3-QZ-lGG"/>
+                <outlet property="authorImageView" destination="Y8R-lr-gHf" id="uFb-Wp-HxP"/>
+                <outlet property="authorLabel" destination="mFc-01-6D2" id="2ma-nZ-BcA"/>
+                <outlet property="backgroundImageView" destination="F5g-wV-Bdr" id="eNq-la-Hdi"/>
+                <outlet property="buttonsContainer" destination="t9J-MS-LWx" id="G1r-Z2-lru"/>
+                <outlet property="commentButton" destination="kIu-F2-Ct8" id="w1U-mZ-j6O"/>
+                <outlet property="containerView" destination="h8G-7O-gz0" id="tk7-pa-brU"/>
+                <outlet property="dashLabel" destination="Ou1-5k-KQ4" id="B2y-Ql-h38"/>
+                <outlet property="editContainer" destination="TjV-Jb-gyd" id="lCV-uB-yf4"/>
+                <outlet property="linkLabel" destination="RnT-1G-La7" id="tvU-Fp-94d"/>
+                <outlet property="shareButton" destination="ZDz-OC-y0b" id="D2N-Kl-3aa"/>
+                <outlet property="titleLabel" destination="vQj-dA-VBh" id="4ii-Qk-k6f"/>
+            </connections>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="comment" width="26" height="23"/>
+        <image name="share" width="17" height="23"/>
+    </resources>
+</document>

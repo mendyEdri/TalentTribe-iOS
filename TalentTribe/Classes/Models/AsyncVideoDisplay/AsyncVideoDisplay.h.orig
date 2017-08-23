@@ -1,0 +1,32 @@
+//
+//  AsyncVideoDisplay.h
+//  TalentTribe
+//
+//  Created by Mendy on 16/11/2015.
+//  Copyright © 2015 OnOApps. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Company.h"
+#import "Story.h"
+#import <AVFoundation/AVFoundation.h>
+#import "StoryFeedCollectionViewCell.h"
+#import "StoryFeedCollectionViewMultimediaCell.h"
+
+typedef void (^StateHandler)(NSString *urlString);
+
+@interface AsyncVideoDisplay : NSObject
+
+@property (nonatomic, copy) StateHandler stateHandler;
+
+- (instancetype)initWithCompaniesArray:(NSArray *)companies;
+- (void)updateVidoePlayerWithCompanies:(NSArray *)companies;
+- (void)avPlayerLayerForUrl:(NSString *)url withCompletion:(SimpleResultBlock)completion;
+- (void)pausePlayerWithUrl:(NSString *)url;
+- (void)playPlayerWithUrl:(NSString *)url;
+<<<<<<< HEAD
+
+=======
+- (NSString *)urlStringOfCurrentlyPlayingInPlayer:(AVPlayer *)player;
+>>>>>>> mendy
+@end

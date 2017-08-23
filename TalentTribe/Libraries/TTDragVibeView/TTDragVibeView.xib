@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="TitilliumWeb-Regular.ttf">
+            <string>TitilliumWeb-Regular</string>
+            <string>TitilliumWeb-Regular</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-SemiBold.ttf">
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clipsSubviews="YES" contentMode="scaleToFill" id="iN0-l3-epB" customClass="TTDragVibeView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart" translatesAutoresizingMaskIntoConstraints="NO" id="hxZ-eO-y47" customClass="TTTouchImageView">
+                    <rect key="frame" x="243" y="40" width="72" height="71"/>
+                    <gestureRecognizers/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="71" id="Mmr-cs-F5X"/>
+                        <constraint firstAttribute="width" constant="72" id="zPl-as-2ef"/>
+                    </constraints>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="ekc-J2-y7z" appends="YES" id="WDe-IV-3xa"/>
+                    </connections>
+                </imageView>
+                <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hiring" translatesAutoresizingMaskIntoConstraints="NO" id="74S-3Z-JyK" customClass="TTTouchImageView">
+                    <rect key="frame" x="168" y="40" width="72" height="71"/>
+                    <gestureRecognizers/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="72" id="GJM-T9-s3p"/>
+                        <constraint firstAttribute="height" constant="71" id="uRs-ya-uIj"/>
+                    </constraints>
+                </imageView>
+                <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5p8-pt-dOY">
+                    <rect key="frame" x="0.0" y="36" width="320" height="532"/>
+                    <subviews>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We Like You Too!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DCY-e3-Esh">
+                            <rect key="frame" x="8" y="89" width="304" height="88"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="35"/>
+                            <color key="textColor" red="0.92156862750000001" green="0.0039215686269999999" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="red_heart" translatesAutoresizingMaskIntoConstraints="NO" id="OCV-9D-eZ1" customClass="TTTouchImageView">
+                            <rect key="frame" x="243" y="4" width="72" height="71"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="71" id="B5J-fw-OPj"/>
+                                <constraint firstAttribute="width" constant="72" id="Qu0-PZ-z7B"/>
+                            </constraints>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cGM-Ha-okV">
+                            <rect key="frame" x="123" y="358" width="74" height="30"/>
+                            <state key="normal" title="No Thanks">
+                                <color key="titleColor" red="0.92156862750000001" green="0.0039215686269999999" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="cancelVibePressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="8Ep-Bh-QxH"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sx8-CQ-Wbr">
+                            <rect key="frame" x="68" y="291" width="185" height="42"/>
+                            <color key="backgroundColor" red="0.92156862750000001" green="0.0039215686269999999" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="42" id="NsE-Bs-JLD"/>
+                                <constraint firstAttribute="width" constant="185" id="u0m-e1-dAF"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="18"/>
+                            <state key="normal" title="Follow">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="follow:" destination="iN0-l3-epB" eventType="touchUpInside" id="BlD-0G-cZ7"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HrH-hL-nQr">
+                            <rect key="frame" x="0.0" y="226" width="320" height="48"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u3B-gr-jGB">
+                                    <rect key="frame" x="160" y="13" width="110" height="22"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="22" id="GT5-w9-h52"/>
+                                        <constraint firstAttribute="width" constant="110" id="N71-1R-dWg"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="15"/>
+                                    <inset key="titleEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="New Stories" image="checked">
+                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <state key="selected" image="uncheck"/>
+                                    <connections>
+                                        <action selector="newStoriesChecked:" destination="iN0-l3-epB" eventType="touchUpInside" id="dN2-Kj-5wD"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6bi-NR-xPe">
+                                    <rect key="frame" x="37" y="13" width="123" height="22"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="123" id="DLq-4X-bCU"/>
+                                        <constraint firstAttribute="height" constant="22" id="dQx-M2-ARs"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="15"/>
+                                    <inset key="titleEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="Job Openings" image="checked">
+                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <state key="selected" image="uncheck"/>
+                                    <connections>
+                                        <action selector="jobOpeningChecked:" destination="iN0-l3-epB" eventType="touchUpInside" id="yz2-dv-Gfi"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="u3B-gr-jGB" firstAttribute="centerY" secondItem="HrH-hL-nQr" secondAttribute="centerY" id="Nsb-OO-ufw"/>
+                                <constraint firstItem="6bi-NR-xPe" firstAttribute="trailing" secondItem="HrH-hL-nQr" secondAttribute="centerX" id="agA-eH-BWm"/>
+                                <constraint firstAttribute="height" constant="48" id="fsE-bi-bNf"/>
+                                <constraint firstItem="6bi-NR-xPe" firstAttribute="centerY" secondItem="HrH-hL-nQr" secondAttribute="centerY" id="vq5-gm-dlT"/>
+                                <constraint firstItem="u3B-gr-jGB" firstAttribute="leading" secondItem="HrH-hL-nQr" secondAttribute="centerX" id="yUR-k9-AC5"/>
+                            </constraints>
+                        </view>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter Your Email" placeholder="Enter Your Email" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uKh-Ha-0GB">
+                            <rect key="frame" x="20" y="185" width="281" height="38"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="38" id="JgD-L1-2qO"/>
+                            </constraints>
+                            <color key="textColor" red="0.92156862745098034" green="0.0039215686274509803" blue="0.26666666666666666" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="16"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="done"/>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fuF-dS-K1B">
+                            <rect key="frame" x="20" y="221" width="281" height="2"/>
+                            <color key="backgroundColor" red="0.92156862745098034" green="0.0039215686274509803" blue="0.26666666666666666" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.90087221746575341" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="OCV-9D-eZ1" secondAttribute="trailing" constant="5" id="15k-g0-iyt"/>
+                        <constraint firstItem="uKh-Ha-0GB" firstAttribute="leading" secondItem="fuF-dS-K1B" secondAttribute="leading" id="4MQ-T5-Sxf"/>
+                        <constraint firstItem="HrH-hL-nQr" firstAttribute="top" secondItem="uKh-Ha-0GB" secondAttribute="bottom" constant="3" id="7gt-Gl-0ba"/>
+                        <constraint firstItem="uKh-Ha-0GB" firstAttribute="trailing" secondItem="fuF-dS-K1B" secondAttribute="trailing" id="9rf-YP-yWS"/>
+                        <constraint firstItem="HrH-hL-nQr" firstAttribute="centerY" secondItem="5p8-pt-dOY" secondAttribute="centerY" constant="-16" id="BQO-3r-2N8"/>
+                        <constraint firstItem="fuF-dS-K1B" firstAttribute="bottom" secondItem="uKh-Ha-0GB" secondAttribute="bottom" id="G7e-pB-fg2"/>
+                        <constraint firstAttribute="trailing" secondItem="HrH-hL-nQr" secondAttribute="trailing" id="J2s-Yr-FBO"/>
+                        <constraint firstItem="HrH-hL-nQr" firstAttribute="leading" secondItem="5p8-pt-dOY" secondAttribute="leading" id="PU1-In-o5C"/>
+                        <constraint firstItem="HrH-hL-nQr" firstAttribute="centerX" secondItem="5p8-pt-dOY" secondAttribute="centerX" id="REd-N5-Bwk"/>
+                        <constraint firstItem="sx8-CQ-Wbr" firstAttribute="centerX" secondItem="5p8-pt-dOY" secondAttribute="centerX" id="Zbb-zp-WmN"/>
+                        <constraint firstAttribute="trailing" secondItem="fuF-dS-K1B" secondAttribute="trailing" constant="19" id="aLt-Pe-mJ5"/>
+                        <constraint firstItem="uKh-Ha-0GB" firstAttribute="top" secondItem="DCY-e3-Esh" secondAttribute="bottom" constant="8" symbolic="YES" id="b8P-JZ-kFm"/>
+                        <constraint firstItem="DCY-e3-Esh" firstAttribute="centerX" secondItem="uKh-Ha-0GB" secondAttribute="centerX" id="bdl-8q-FT2"/>
+                        <constraint firstItem="DCY-e3-Esh" firstAttribute="leading" secondItem="5p8-pt-dOY" secondAttribute="leadingMargin" id="cnc-YU-ciS"/>
+                        <constraint firstItem="cGM-Ha-okV" firstAttribute="top" secondItem="sx8-CQ-Wbr" secondAttribute="bottom" constant="25" id="dHf-bt-l8Y"/>
+                        <constraint firstItem="cGM-Ha-okV" firstAttribute="centerX" secondItem="5p8-pt-dOY" secondAttribute="centerX" id="jSl-7j-p3v"/>
+                        <constraint firstItem="fuF-dS-K1B" firstAttribute="leading" secondItem="5p8-pt-dOY" secondAttribute="leading" constant="20" id="nTC-5K-AcA"/>
+                        <constraint firstItem="fuF-dS-K1B" firstAttribute="top" secondItem="uKh-Ha-0GB" secondAttribute="bottom" constant="-2" id="nao-JM-q7l"/>
+                        <constraint firstItem="sx8-CQ-Wbr" firstAttribute="top" secondItem="HrH-hL-nQr" secondAttribute="bottom" constant="17" id="q36-0v-U5b"/>
+                        <constraint firstItem="OCV-9D-eZ1" firstAttribute="top" secondItem="5p8-pt-dOY" secondAttribute="top" constant="4" id="spa-EJ-vMe"/>
+                        <constraint firstItem="DCY-e3-Esh" firstAttribute="top" secondItem="OCV-9D-eZ1" secondAttribute="bottom" constant="14" id="tyA-6r-oEx"/>
+                    </constraints>
+                </view>
+                <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VLy-Na-MU4">
+                    <rect key="frame" x="0.0" y="36" width="320" height="532"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You got it!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kiX-6D-09M">
+                            <rect key="frame" x="8" y="222" width="304" height="88"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="88" id="H6w-mY-vda"/>
+                                <constraint firstAttribute="width" constant="304" id="dZ6-OP-X1J"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="35"/>
+                            <color key="textColor" red="0.92156862750000001" green="0.0039215686269999999" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="kiX-6D-09M" firstAttribute="leading" secondItem="VLy-Na-MU4" secondAttribute="leading" constant="8" id="9cn-C0-Lrk"/>
+                        <constraint firstItem="kiX-6D-09M" firstAttribute="centerY" secondItem="VLy-Na-MU4" secondAttribute="centerY" id="GdY-4s-wFk"/>
+                        <constraint firstItem="kiX-6D-09M" firstAttribute="centerX" secondItem="VLy-Na-MU4" secondAttribute="centerX" id="UqI-wu-kIj"/>
+                        <constraint firstAttribute="trailing" secondItem="kiX-6D-09M" secondAttribute="trailing" constant="8" id="z3G-j9-BHs"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="5p8-pt-dOY" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="18" id="Aso-vx-uQ0"/>
+                <constraint firstAttribute="trailing" secondItem="5p8-pt-dOY" secondAttribute="trailing" id="Fsk-lp-LHT"/>
+                <constraint firstAttribute="bottom" secondItem="5p8-pt-dOY" secondAttribute="bottom" id="WBM-fa-wDK"/>
+                <constraint firstItem="5p8-pt-dOY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="bzc-uP-u80"/>
+                <constraint firstItem="VLy-Na-MU4" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="cCC-q1-EGJ"/>
+                <constraint firstAttribute="trailing" secondItem="VLy-Na-MU4" secondAttribute="trailing" id="eug-cI-wVR"/>
+                <constraint firstAttribute="trailing" secondItem="hxZ-eO-y47" secondAttribute="trailing" constant="5" id="f8e-TQ-wvf"/>
+                <constraint firstItem="hxZ-eO-y47" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="40" id="f9M-8y-QPO"/>
+                <constraint firstItem="VLy-Na-MU4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="k4a-Yd-Xsz"/>
+                <constraint firstItem="hxZ-eO-y47" firstAttribute="leading" secondItem="74S-3Z-JyK" secondAttribute="trailing" constant="3" id="kcV-Fm-aZB"/>
+                <constraint firstItem="VLy-Na-MU4" firstAttribute="top" secondItem="5p8-pt-dOY" secondAttribute="top" id="lOJ-kD-Nyu"/>
+                <constraint firstItem="VLy-Na-MU4" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="18" id="pd7-Qb-3gC"/>
+                <constraint firstItem="5p8-pt-dOY" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="qUa-j8-K4d"/>
+                <constraint firstItem="5p8-pt-dOY" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="36" id="tfo-Kk-OKf"/>
+                <constraint firstItem="74S-3Z-JyK" firstAttribute="top" secondItem="hxZ-eO-y47" secondAttribute="top" id="xAs-WZ-1Tl"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="doneView" destination="VLy-Na-MU4" id="y9M-r7-Rvd"/>
+                <outlet property="emailTextField" destination="uKh-Ha-0GB" id="1v5-DM-m68"/>
+                <outlet property="followButton" destination="sx8-CQ-Wbr" id="BYt-xT-SSB"/>
+                <outlet property="hiringButton" destination="74S-3Z-JyK" id="8CZ-ct-BID"/>
+                <outlet property="infoContainer" destination="5p8-pt-dOY" id="M3s-NP-J1Q"/>
+                <outlet property="likeHeaderTitle" destination="DCY-e3-Esh" id="pIB-Rw-18Z"/>
+                <outlet property="messageLabel" destination="kiX-6D-09M" id="ZcP-iy-B5F"/>
+                <outlet property="topConstraint" destination="f9M-8y-QPO" id="M7u-jY-xdq"/>
+                <outlet property="topMarginConstraint" destination="tfo-Kk-OKf" id="GrF-du-oS4"/>
+                <outlet property="vibeButton" destination="hxZ-eO-y47" id="T9e-H1-5Oi"/>
+            </connections>
+            <point key="canvasLocation" x="602" y="495"/>
+        </view>
+        <tapGestureRecognizer id="ekc-J2-y7z"/>
+    </objects>
+    <resources>
+        <image name="checked" width="19" height="19"/>
+        <image name="heart" width="60" height="60"/>
+        <image name="hiring" width="60" height="60"/>
+        <image name="red_heart" width="60" height="60"/>
+        <image name="uncheck" width="19" height="19"/>
+    </resources>
+</document>

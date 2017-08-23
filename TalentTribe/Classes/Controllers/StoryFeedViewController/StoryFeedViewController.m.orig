@@ -1,0 +1,1251 @@
+//
+//  StoryFeedViewController.m
+//  TalentTribe
+//
+//  Created by Bogdan Andresyuk on 3/27/15.
+//  Copyright (c) 2015 OnOApps. All rights reserved.
+//
+
+#import "StoryFeedViewController.h"
+#import "StoryDetailsViewController.h"
+#import "StoryFeedTableViewCell.h"
+#import "StoryFeedCollectionViewQuestionCell.h"
+#import "StoryFeedCollectionViewLinkCell.h"
+#import "StoryFeedCollectionViewMultimediaCell.h"
+#import "StoryFeedCollectionViewHardFactsCell.h"
+#import "SVPullToRefresh.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImagePrefetcher.h>
+#import "DataManager.h"
+#import "Company.h"
+#import "Story.h"
+#import "Author.h"
+#import "SocialManager.h"
+#import "DejalActivityView.h"
+#import "User.h"
+#import "CompanyProfileViewController.h"
+#import "UIViewController+RootNavigationController.h"
+#import "RootNavigationController.h"
+#import "TTTabBarController.h"
+#import "TTDeeplinkManager.h"
+#import "DetailsPageViewController.h"
+#import "GeneralMethods.h"
+#import "AsyncVideoDisplay.h"
+
+@interface StoryFeedViewController () <UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, StoryFeedCollectionViewCellDelegate, StoryFeedTableViewCellDelegate, DetailsPageDelegate>
+
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *topLayoutConstraint;
+@property (nonatomic, strong) NSMutableDictionary *contentOffsetDictionary;
+@property (nonatomic, strong) NSMutableArray *dataContainer;
+@property NSInteger currentPage;
+@property (strong, nonatomic) StoryFeedCollectionViewMultimediaCell *currPlayingCell;
+@property (nonatomic, strong) UIViewController *loadingViewController;
+@property (nonatomic) CGPoint currentContentOffset;
+@property NSInteger currentItemIndex;
+@property (nonatomic, strong) UIRefreshControl *refresh;
+@property (nonatomic, strong) NSMutableArray *videoPlayers;
+
+@property (nonatomic, strong) NSIndexPath *vibedIndexPath;
+@property (nonatomic, strong) AsyncVideoDisplay *asyncPlayer;
+
+@end
+
+@implementation StoryFeedViewController
+
+#pragma mark Initialization
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.title = @"TalentTribe";
+    }
+    return self;
+}
+
+#pragma mark Reloading data
+
+- (void)reloadData
+{
+    
+    [[DataManager sharedManager] setHashDiffrent:NO];
+    @synchronized(self)
+    {
+        static BOOL loading = NO;
+        if (!loading)
+        {
+            loading = YES;
+            if (!self.dataContainer)
+            {
+                if (self.loadingViewController)
+                {
+                    if (self.selectedCategory)
+                    {
+                        [TTActivityIndicator showOnMainWindow];
+                    }
+                    else
+                    {
+                        [TTActivityIndicator showOnMainWindowOnTop];
+                    }
+                }
+                else
+                {
+                    [TTActivityIndicator showOnMainWindow];
+                }
+                
+                [self.tableView.infiniteScrollingView setEnabled:NO];
+                self.currentPage = 0;
+                self.contentOffsetDictionary = [NSMutableDictionary new];
+                
+                [[DataManager sharedManager] storyFeedForCategory:self.selectedCategory companyId:nil completionHandler:^(id result, NSError *error)
+                {
+                    if (result && !error)
+                    {
+                        self.dataContainer = [[NSMutableArray alloc] initWithArray:result];
+                        
+                        self.asyncPlayer = [[AsyncVideoDisplay alloc] initWithCompaniesArray:self.dataContainer];
+                        __weak typeof (self) wself = self;
+                        [self.asyncPlayer setStateHandler:^(NSString *urlString) {
+                            [wself startPlayingMultimediaURLString:urlString];
+                        }];
+                        NSMutableArray *urls = [NSMutableArray new];
+                        self.videoPlayers = [NSMutableArray new];
+                        for (Company *company in result) {
+                            Story *story = company.stories.firstObject;
+                            NSURL *url = [NSURL URLWithString:[story.storyImages.firstObject objectForKeyOrNil:kRegularImage]];
+                            if (url)
+                            {
+                                DLog(@"Downloading story image with URL %@", url);
+                                [urls addObject:url];
+                            }
+                        }
+                        
+                        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:urls];
+                        
+                        //[self.tableView.infiniteScrollingView setEnabled:(self.dataContainer.count == STORYFEED_DEFAULT_PAGE_SIZE)];
+                        [self.tableView reloadData];
+
+                        // download indexes for next stories
+                        [[DataManager sharedManager] storyFeedIndexesWithParams:@{@"page" : @(1)} completionHandler:^(id result, NSError *error) {
+                            if (result && !error) {
+                                
+                            }
+                        }];
+                        [self handleDeeplink];
+                    }
+                    else
+                    {
+                        //handle error
+                    }
+                    
+                    if (self.loadingViewController)
+                    {
+                        [TTActivityIndicator dismiss];
+                    }
+                    else
+                    {
+                        [TTActivityIndicator dismiss];
+                    }
+                    
+                    [self.tableView.infiniteScrollingView setEnabled:YES];
+                    loading = NO;
+                    [self removeLoadingViewControllerAnimated:YES];
+                }];
+            } else
+            {
+                [self.tableView reloadData];
+                loading = NO;
+            }
+        }
+    }
+}
+
+- (void)refreshFeed {
+    if (self.refresh.refreshing) {
+        return;
+    }
+    if ([DataManager sharedManager].isHashDiffrent) {
+        [self reloadData];
+        return;
+    }
+    @synchronized(self) {
+        NSLog(@"Refreshed");
+        [self.tableView setContentOffset:CGPointMake(0, -CGRectGetHeight(self.refresh.bounds)) animated:YES];
+        
+        // end refreshing + set tableview contentOffset should be in response block for refresh
+        [[DataManager sharedManager] storyFeedIndexesWithParams:@{@"page" : @(1)} completionHandler:^(id result, NSError *error) {
+            
+            NSMutableArray *ids = [NSMutableArray new];
+            if (result && !error) {
+                DLog(@"Results %@", result);
+                
+                for (NSArray *row in result) {
+                    [ids addObjectsFromArray:row];
+                }
+                
+                [[DataManager sharedManager] sha1StringFromIdsArray:[ids copy] completionHandler:^(id result, NSError *error) {
+                    if (result && !error) {
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.refresh endRefreshing];
+                                [self.tableView setContentOffset:CGPointMake(0, 0) animated:YES];
+                            });
+                        });
+                        [[DataManager sharedManager] refreshIdIndexesWithEncryptedString:result completionHandler:^(id result, NSError *error) {
+                            if ([result[@"isEqualHash"] isEqualToString:@"NO"]) {
+                                [[DataManager sharedManager] setHashDiffrent:YES];
+                            }
+                        }];
+                    }
+                }];
+            }
+        }];
+    }
+}
+
+- (void)loadPage:(NSInteger)page {
+    static BOOL loading = NO;
+    if (!loading) {
+        loading = YES;
+        
+        // make a new call with current company index, and load the next company with indexes
+        [[DataManager sharedManager] storyFeedIndexesForYAxis:self.dataContainer.count-1 maxCount:5 completionHandler:^(id result, NSError *error) {
+            DLog(@"Result load more %@", result);
+            
+            // make 2D ids array into 1D Array
+            NSMutableArray *allIds = [NSMutableArray new];
+            for (NSArray *ids in result) {
+                [allIds addObjectsFromArray:ids];
+            }
+            
+            DLog(@"allIds %@", allIds);
+            if (allIds.count == 0) {
+                [[self.tableView infiniteScrollingView] stopAnimating];
+                [self autoAdjustScrollToTop];
+                loading = NO;
+                return ;
+            }
+            [[DataManager sharedManager] storyFeedIndexesWithParams:nil completionHandler:^(id result, NSError *error) {
+                [[DataManager sharedManager] storiesByIds:@{@"ids" : allIds, @"size" : [GeneralMethods screenSizeDict]} orderByIndexes:result completionHandler:^(id result, NSError *error) {
+                    if (result && !error) {
+                        self.currentPage = page;
+                        
+                        [self.dataContainer addObjectsFromArray:result];
+                        [self.asyncPlayer updateVidoePlayerWithCompanies:result];
+                        NSMutableArray *urls = [NSMutableArray new];
+                        for (Company *company in result) {
+                            for (Story *story in company.stories) {
+                                NSURL *url = [NSURL URLWithString:[story.storyImages.firstObject objectForKeyOrNil:kRegularImage]];
+                                if (url) {
+                                    DLog(@"Downloading story image with URL %@", url);
+                                    [urls addObject:url];
+                                }
+                            }
+                        }
+                        
+                        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:urls];
+                        
+                        [self.tableView reloadData];
+                    } else {
+                        //handle error
+                    }
+                    [[self.tableView infiniteScrollingView] stopAnimating];
+                    [self autoAdjustScrollToTop];
+                    loading = NO;
+                }];
+            }];
+        }];
+    }
+}
+
+- (void)performPendingVibeAction {
+    if (self.vibedIndexPath) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSArray *visibleRows = [self.tableView indexPathsForVisibleRows];
+            for (NSIndexPath *indexPath in visibleRows) {
+                if ([self.vibedIndexPath isEqual:indexPath]) {
+                    DataManager *dMgr = [DataManager sharedManager];
+                    if ([dMgr isCredentialsSavedInKeychain] && [dMgr.currentUser isProfilePartiallyFilled]) {
+                        NSInteger index = [visibleRows indexOfObject:indexPath];
+                        StoryFeedTableViewCell *storyCell = [[self.tableView visibleCells] objectAtIndex:index];
+                        [storyCell.dragVibeView performVibeActionManually];
+                    }
+                    break;
+                }
+            }
+            self.vibedIndexPath = nil;
+        });
+    }
+}
+
+- (void)removeLoadingViewControllerAnimated:(BOOL)animated {
+    if (self.loadingViewController) {
+        self.view.alpha = 0.0f;
+        [UIView animateWithDuration:1.0f animations:^{
+            self.view.alpha = 1.0f;
+            self.loadingViewController.view.alpha = 0.0f;
+        } completion:^(BOOL finished) {
+            [self.loadingViewController.view removeFromSuperview];
+            self.loadingViewController = nil;
+        }];
+    } else {
+        [self.loadingViewController.view removeFromSuperview];
+        self.loadingViewController = nil;
+    }
+}
+
+#pragma mark UITableView dataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.dataContainer.count;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+    
+    CGFloat horizontalOffset = [self.contentOffsetDictionary[[@(indexPath.row) stringValue]] floatValue];
+    [storyCell.collectionView setContentOffset:CGPointMake(horizontalOffset, 0)];
+    
+    Company *company = [self.dataContainer objectAtIndex:indexPath.row];
+    
+    [storyCell setCompany:company];
+    
+    if (company.companyName) {
+        storyCell.companyTitle.attributedText = [TTUtils attributedCompanyName:company.companyName industry:company.industry];
+        storyCell.headerContainer.hidden = NO;
+    } else {
+        storyCell.companyTitle.attributedText = nil;
+        storyCell.headerContainer.hidden = YES;
+    }
+    
+    if ([(Story *)company.stories.firstObject storyType] == StoryTypeCreateProfile) {
+        [storyCell.companyImageView setHidden:YES];
+        [storyCell.companyTitle setHidden:YES];
+        [storyCell.dragVibeView setHidden:YES];
+    }
+    
+    [self performPendingVibeAction];
+    
+    [self updateArrowsState];
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+    CGFloat horizontalOffset = storyCell.collectionView.contentOffset.x;
+    self.contentOffsetDictionary[[@(indexPath.row) stringValue]] = @(horizontalOffset);
+    
+    [self updateArrowsState];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [self heightForStoryFeedCell];
+}
+
+-(NSInteger)getStoryFromTableViewById:(NSString *)storyId
+{
+    for (Company *company in self.dataContainer)
+    {
+        Story *story = company.stories[0];
+        
+        if ([story.storyId isEqualToString:storyId])
+        {
+            return [self.dataContainer indexOfObject:company];
+        }
+    }
+    
+    return -1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    StoryFeedTableViewCell *storyCell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    [storyCell setDelegate:self];
+    [storyCell setCollectionViewDataSource:self delegate:self];
+<<<<<<< HEAD
+=======
+
+    Company *company = [self.dataContainer objectAtIndex:indexPath.row];
+    
+    [storyCell setCompany:company];
+    
+    if (company.companyName) {
+        storyCell.companyTitle.attributedText = [TTUtils attributedCompanyName:company.companyName industry:company.industry];
+        storyCell.headerContainer.hidden = NO;
+    } else {
+        storyCell.companyTitle.attributedText = nil;
+        storyCell.headerContainer.hidden = YES;
+    }
+    
+    if ([(Story *)company.stories.firstObject storyType] == StoryTypeCreateProfile) {
+        [storyCell.companyImageView setHidden:YES];
+        [storyCell.companyTitle setHidden:YES];
+        [storyCell.dragVibeView setHidden:YES];
+    }
+    
+>>>>>>> mendy
+    return storyCell;
+}
+
+//- (void) boldRange: (NSRange) range
+//{
+//    if (![self respondsToSelector:@selector(setAttributedText:)])
+//    {
+//        return;
+//    }
+//    
+//    NSMutableAttributedString *attributedText = [[[NSMutableAttributedString alloc] initWithString:self.text] autorelease];
+//    [attributedText setAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:self.font.pointSize]} range:range];
+//    
+//    self.attributedText = attributedText;
+//}
+//
+//- (void) boldSubstring: (NSString*) substring
+//{
+//    NSRange range = [self.text rangeOfString:substring];
+//    [self boldRange:range];
+//}
+
+- (void)updateArrowsState {
+    for (StoryFeedTableViewCell *visibleCell in self.tableView.visibleCells) {
+        [visibleCell updateButtonsState];
+    }
+}
+
+
+#pragma mark Heights handling
+
+- (CGFloat)heightForStoryFeedCell {
+    return self.view.bounds.size.width;
+}
+
+#pragma mark UITableView delegate
+
+#pragma mark UICollectionView dataSource
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:[self cellForChildView:collectionView]];
+    if (indexPath) {
+        Company *company = [self.dataContainer objectAtIndex:indexPath.row];
+        return company.stories.count;
+    }
+    return 0;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSIndexPath *collectionIndexPath = [self.tableView indexPathForCell:[self cellForChildView:collectionView]];
+    
+    Company *company = [self.dataContainer objectAtIndex:collectionIndexPath.row];
+    Story *story = [company.stories objectAtIndex:indexPath.row];
+
+    StoryFeedCollectionViewCell *cell;
+    switch (story.storyType) {
+        case StoryTypeStory: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"storyCell" forIndexPath:indexPath];
+        } break;
+        case StoryTypeCreateProfile: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"createProfileCell" forIndexPath:indexPath];
+        } break;
+        case StoryTypeQuestion: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"questionCell" forIndexPath:indexPath];
+            StoryFeedCollectionViewQuestionCell *questionCell = (StoryFeedCollectionViewQuestionCell *)cell;
+            
+            [questionCell setIndex:[company indexOfStoryByType:story]];
+            questionCell.questionAnswersLabel.hidden = story.commentsNum <= 0;
+            
+            if (story.commentsNum > 0) {
+                questionCell.questionAnswersLabel.attributedText = [self attributedStringForString:[NSString stringWithFormat:@"%ld people answered", (long)story.commentsNum] highlight:[NSString stringWithFormat:@"%ld", (long)story.commentsNum]];
+            } else {
+                questionCell.readMoreLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Be the first to answer »" attributes:@{NSFontAttributeName : questionCell.readMoreLabel.font, NSForegroundColorAttributeName : questionCell.readMoreLabel.textColor}];
+            }
+        } break;
+        case StoryTypeLink: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"linkCell" forIndexPath:indexPath];
+            StoryFeedCollectionViewLinkCell *linkCell = (StoryFeedCollectionViewLinkCell *)cell;
+            
+            linkCell.linkLabel.attributedText = [[NSAttributedString alloc] initWithString:[[[NSURL URLWithString:story.videoLink] host] stringByReplacingOccurrencesOfString:@"www." withString:@""] attributes:@{NSFontAttributeName : linkCell.linkLabel.font, NSForegroundColorAttributeName : linkCell.linkLabel.textColor}];
+        } break;
+        case StoryTypeMultimedia: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"multimediaCell" forIndexPath:indexPath];
+            StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+            multimediaCell.urlString = story.videoLink;
+<<<<<<< HEAD
+            [self startPlayingMultimediaCell:cell inCollectionView:collectionView];
+=======
+            [self addPlayingMultimediaCells:@[cell]];
+>>>>>>> mendy
+        } break;
+        case StoryTypeHardFacts: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hardFactsCell" forIndexPath:indexPath];
+            StoryFeedCollectionViewHardFactsCell *hardFactsCell = (StoryFeedCollectionViewHardFactsCell *)cell;
+            
+            hardFactsCell.aboutLabel.text = company.about;
+            
+            hardFactsCell.separatorView.hidden = NO;
+            hardFactsCell.leftItemContainer.hidden = NO;
+            hardFactsCell.rightItemContainer.hidden = NO;
+            
+            if (company.industry && company.employees) {
+                hardFactsCell.leftItemValueLabel.text = company.industry;
+                hardFactsCell.leftItemTitleLabel.text = @"Industry";
+                
+                hardFactsCell.rightItemValueLabel.text = company.employees;
+                hardFactsCell.rightItemTitleLabel.text = @"Employees";
+            } else {
+                NSMutableArray *items = [NSMutableArray new];
+                if (company.industry) {
+                    [items addObject:@{kTitleKey : @"Industry", kValueKey : company.industry}];
+                }
+                if (company.employees) {
+                    [items addObject:@{kTitleKey : @"Employees", kValueKey : company.employees}];
+                }
+                if (company.founded) {
+                    [items addObject:@{kTitleKey : @"Founded", kValueKey : company.founded}];
+                }
+                if (company.funding) {
+                    [items addObject:@{kTitleKey : @"Funding", kValueKey : company.funding}];
+                }
+                if (company.headquarters) {
+                    [items addObject:@{kTitleKey : @"Headquareters", kValueKey : company.headquarters}];
+                }
+                if (company.stage) {
+                    [items addObject:@{kTitleKey : @"Stage", kValueKey : company.stage}];
+                }
+                if (items.count >= 2) {
+                    hardFactsCell.leftItemTitleLabel.text = [items[0] objectForKey:kTitleKey];
+                    hardFactsCell.leftItemValueLabel.text = [items[0] objectForKey:kValueKey];
+                
+                    hardFactsCell.rightItemTitleLabel.text = [items[1] objectForKey:kTitleKey];
+                    hardFactsCell.rightItemValueLabel.text = [items[1] objectForKey:kValueKey];
+                } else {
+                    hardFactsCell.separatorView.hidden = YES;
+                    hardFactsCell.leftItemContainer.hidden = YES;
+                    hardFactsCell.rightItemContainer.hidden = YES;
+                }
+            }
+        } break;
+        case StoryTypeOfficePhotos: {
+            cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"officesCell" forIndexPath:indexPath];
+        } break;
+    }
+
+    [cell.shareButton setHidden:YES];
+    
+    cell.titleLabel.shadowEnabled = story.storyType != StoryTypeQuestion;
+    cell.titleLabel.attributedText = [cell attributedStringForString:story.storyTitle];
+    
+    if (story.storyType != StoryTypeQuestion) {
+        DejalActivityView *activityUView = [DejalWhiteActivityView activityViewForView:cell];
+        [cell.backgroundImageView sd_setImageWithURL:[NSURL URLWithString:[story.storyImages.firstObject objectForKeyOrNil:kRegularImage]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                [activityUView removeFromSuperview];
+        }];
+    }
+    
+    cell.delegate = self;
+    cell.indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:collectionIndexPath.row];
+    
+    [cell.commentButton setTitle:[TTUtils stringForNumberReplacingThousands:story.commentsNum] forState:UIControlStateNormal];
+    return cell;
+}
+
+- (NSAttributedString *)attributedStringForString:(NSString *)string highlight:(NSString *)highlight {
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string];
+    [attributedString setAttributes:@{NSFontAttributeName : [UIFont fontWithName:@"TitilliumWeb-Light" size:13]} range:NSMakeRange(0, attributedString.string.length)];
+    [attributedString addAttributes:@{NSFontAttributeName : [UIFont fontWithName:@"TitilliumWeb-Semibold" size:13]} range:[attributedString.string rangeOfString:highlight]];
+    
+    return attributedString;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return collectionView.bounds.size;
+}
+
+#pragma mark UICollectionView delegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    StoryFeedCollectionViewCell *selectedCell = (StoryFeedCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self collectionViewCellClicked:selectedCell];
+}
+
+- (void)collectionViewCellClicked:(StoryFeedCollectionViewCell *)cell {
+    DLog(@"Section %ld", cell.indexPath.section);
+    DLog(@"Row %ld", cell.indexPath.row);
+    Company *company = [self.dataContainer objectAtIndex:cell.indexPath.section];
+    Story *story = [company.stories objectAtIndex:cell.indexPath.row];
+    switch (story.storyType) {
+        case StoryTypeHardFacts: {
+            [self presentCompanyDetailsForCompany:company item:MenuItemAbout];
+        } break;
+        case StoryTypeOfficePhotos: {
+            [self presentCompanyDetailsForCompany:company item:MenuItemOurOffices];
+        } break;
+        case StoryTypeCreateProfile: {
+            DataManager *dMgr = [DataManager sharedManager];
+            if (![dMgr isCredentialsSavedInKeychain]) {
+                [(TTTabBarController *)self.rdv_tabBarController setScheduledTabItem:TabItemCreateUserProfile];
+                [dMgr showLoginScreen];
+            } else if (dMgr.currentUser.isProfilePartiallyFilled) {
+                [(TTTabBarController *)self.rdv_tabBarController moveToTabItem:TabItemUserProfile];
+            } else {
+                [(TTTabBarController *)self.rdv_tabBarController presentCreateUserProfileScreen];
+            }
+        } break;
+        default:
+        {
+            [self presentStoryDetailsForCompany:company story:story comment:NO atIndex:cell.indexPath.row];
+        } break;
+    }
+}
+
+-(void)collectionViewCellShouldClick:(StoryFeedCollectionViewCell *)cell
+{
+//    self.tableView.userInteractionEnabled = YES;
+    [self collectionViewCellClicked:cell];
+    
+    TTDeeplinkManager *manager = DEEPLINK_MANAGER;
+    [manager deallocDeeplinkManager];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    /*if([cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+        [self cancelPlayingMultimediaItems];
+        StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+        [multimediaCell play];
+    }*/
+    
+    NSIndexPath *collectionIndexPath = [self.tableView indexPathForCell:[self cellForChildView:collectionView]];
+    Company *company = [self.dataContainer objectAtIndex:collectionIndexPath.row];
+    if (company.companyId && company.stories.count > 0 && indexPath.item == company.stories.count - 1) {
+        [self collectionViewReachToEndXAxis:collectionView atIndex:collectionIndexPath.row];
+    }
+    
+    [self updateArrowsState];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    /*if([cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+        StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+        [multimediaCell pause];
+    }*/
+    [self updateArrowsState];
+}
+
+- (void)presentCompanyDetailsForCompany:(Company *)company item:(MenuItem)item {
+    CompanyProfileViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"companyProfileViewController"];
+    controller.company = company;
+    controller.currentSelectedItem = item;
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)presentStoryDetailsForCompany:(Company *)company story:(Story *)story comment:(BOOL)comment atIndex:(NSInteger)index {
+    if (company.stories.count) {
+        DetailsPageViewController *detailsPageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailsPageViewController"];
+        detailsPageViewController.company = company;
+        detailsPageViewController.currentStory = story;
+        detailsPageViewController.shouldOpenComment = comment;
+        detailsPageViewController.startingIndex = index;
+        detailsPageViewController.row = 0;
+        detailsPageViewController.canOpenCompanyDetails = YES;
+        detailsPageViewController.asyncPlayer = self.asyncPlayer;
+        detailsPageViewController.delegate = self;
+        [self.navigationController pushViewController:detailsPageViewController animated:YES];
+    }
+}
+
+#pragma maek - DetailsPageViewController - 
+
+- (void)updateStoriesArray:(NSArray *)storiesArray atRowIndex:(NSInteger)row {
+    // mendy
+}
+
+- (void)collectionViewReachToEndXAxis:(UICollectionView *)collectionView atIndex:(NSInteger)row {
+    Company *company = self.dataContainer[row];
+    [self updateStoriesListWithIndex:company.stories.count atRow:row completion:^(id result, NSError *error) {
+        if (result && !error) {
+            Company *newCompanyForStories = result[0];
+            // update data holder of more stories - self.dataContainer holds companies
+            NSMutableArray *newStories = [[NSMutableArray alloc] initWithArray:company.stories];
+            [newStories addObjectsFromArray:newCompanyForStories.stories];
+            company.stories = [newStories copy];
+            [self.asyncPlayer updateVidoePlayerWithCompanies:@[company]];
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [collectionView reloadData];
+                
+                // add arrow on collection
+                [self updateArrowsState];
+            }];
+        }
+    }];
+}
+
+- (void)updateStoriesListWithIndex:(NSInteger)index atRow:(NSInteger)row completion:(SimpleResultBlock)completion {
+    [[DataManager sharedManager] storyFeedIndexesForXAxis:index inRow:row maxCount:5 completionHandler:^(id result, NSError *error) {
+        if (!error && result) {
+            
+            NSDictionary *params = @{@"ids" : result,
+                                     @"size" : [GeneralMethods screenSizeDict]
+                                     };
+            
+            [[DataManager sharedManager] storyFeedIndexesWithParams:nil completionHandler:^(id result, NSError *error) {
+                [[DataManager sharedManager] storiesByIds:params orderByIndexes:result completionHandler:^(id result, NSError *error) {
+                    DLog(@"Company with Stories by ids on feed %@", result);
+                    
+                    // extract stories from result which contains Company
+                    if (result && !error) {
+                        NSMutableArray *urls = [NSMutableArray new];
+                        for (Company *company in result) {
+                            for (Story *story in company.stories) {
+                                NSURL *url = [NSURL URLWithString:[story.storyImages.firstObject objectForKeyOrNil:kRegularImage]];
+                                if (url) {
+                                    DLog(@"Downloading story image with URL %@", url);
+                                    [urls addObject:url];
+                                }
+                            }
+                        }
+                        [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:urls];
+                        
+                        if (completion) {
+                            completion(result, error);
+                        }
+                    }     
+                }];
+            }];
+        }
+    }];
+}
+
+
+#pragma mark UIScrollView delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (![scrollView isEqual:self.tableView]) {
+        [self enableScrolling:YES]; // this is the line causes scroll issues (previously set "NO" before changed)
+    }
+    [self cancelPlayingMultimediaItems];
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    [self startPlayingMultimediaItems];
+    if ([scrollView isEqual:self.tableView]) {
+        TTDeeplinkManager *manager = DEEPLINK_MANAGER;
+        if ([manager.mode isEqualToString:ON_MODE]) {
+            [manager performSelector:@selector(storyFeedTableViewScrollCompleted) withObject:nil afterDelay:0.7];
+        }
+    } else if ([scrollView isKindOfClass:[UICollectionView class]]) {
+        [self updateContentOffsetDictFromView:(UICollectionView *)scrollView];
+    }
+}
+
+- (void)updateContentOffsetDictFromView:(UICollectionView *)collectionView {
+    StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)[self cellForChildView:collectionView];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:storyCell];
+    CGFloat horizontalOffset = storyCell.collectionView.contentOffset.x;
+    self.contentOffsetDictionary[[@(indexPath.row) stringValue]] = @(horizontalOffset);
+}
+
+- (void)autoAdjustScrollToTop {
+    // compare the top two visible rows to the current content offset
+    // and auto scroll so that the best row is snapped to top
+    NSArray *visibleRows = [self.tableView indexPathsForVisibleRows];
+    if (!visibleRows.count) {
+        return;
+    }
+    NSIndexPath *firstPath = visibleRows[0];
+    NSIndexPath *secondPath = visibleRows[1];
+    CGRect firstRowRect = [self.tableView rectForRowAtIndexPath:firstPath];
+    [self.tableView scrollToRowAtIndexPath:(firstRowRect.origin.y > self.tableView.contentOffset.y ? firstPath:secondPath) atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        if (![scrollView isEqual:self.tableView]) {
+            [self enableScrolling:YES];
+            [self updateContentOffsetDictFromView:(UICollectionView *)scrollView];
+        }
+        [self startPlayingMultimediaItems];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (![scrollView isEqual:self.tableView]) {
+        [self enableScrolling:YES];
+        [self updateContentOffsetDictFromView:(UICollectionView *)scrollView];
+    }
+    [self startPlayingMultimediaItems];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if ([scrollView isEqual:self.tableView]) {
+        self.currentContentOffset = scrollView.contentOffset;
+        BOOL enable = NO;
+        [self enableCellSideScroll:[NSNumber numberWithBool:enable]];
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    
+    if ([scrollView isEqual:self.tableView]) {
+        CGFloat targetY = (*targetContentOffset).y;
+        CGFloat rowHeight = self.view.frame.size.width;
+        CGFloat scrollValue = rowHeight * 0.3f;
+        //CGPoint newOffset = CGPointMake(0, floor(targetY / rowHeight) * rowHeight);
+        DLog(@"CURRENT OFFSET %f, TARGET %f", self.currentContentOffset.y, targetY);
+        
+        CGPoint newOffset = *targetContentOffset;
+
+        
+        if (self.currentContentOffset.y > targetY) {
+            DLog(@"SCROLLING TO TOP");
+            if (self.currentContentOffset.y - scrollValue > targetY) {
+                newOffset = CGPointMake(0, (roundf(self.currentContentOffset.y / rowHeight) - (velocity.y > 2 ? 2 : 1)) * rowHeight);
+                DLog(@"SHOULD SCROLL TO PREV ITEM WITH OFFSET %f", newOffset.y);
+                if (newOffset.y < 0) {
+                    newOffset = CGPointZero;
+                }
+            } else {
+                newOffset = CGPointMake(0, roundf(self.currentContentOffset.y / rowHeight) * rowHeight);
+                DLog(@"SHOULD RETURN TO CURRENT ITEM WITH OFFSET %f", newOffset.y);
+            }
+        }
+
+        else if (self.currentContentOffset.y < targetY) {
+            DLog(@"SCROLLING TO BOTTOM");
+            if (self.currentContentOffset.y + scrollValue < targetY) {
+                newOffset = CGPointMake(0, (roundf(self.currentContentOffset.y / rowHeight) + (velocity.y > 2 ? 2 : 1)) * rowHeight);
+                DLog(@"SHOULD SCROLL TO NEXT ITEM WITH OFFSET %f", newOffset.y);
+                if (newOffset.y > scrollView.contentSize.height - scrollView.frame.size.height + (scrollView.infiniteScrollingView.hidden ? 0.0f : scrollView.infiniteScrollingView.frame.size.height)) {
+                    newOffset = CGPointMake(0, scrollView.contentSize.height - scrollView.frame.size.height + (scrollView.infiniteScrollingView.hidden ? 0.0f : scrollView.infiniteScrollingView.frame.size.height));
+                }
+            } else {
+                newOffset = CGPointMake(0, roundf(self.currentContentOffset.y / rowHeight) * rowHeight);
+                DLog(@"SHOULD RETURN TO CURRENT ITEM WITH OFFSET %f", newOffset.y);
+            }
+        }
+        
+        BOOL enable = YES;
+        [self performSelector:@selector(enableCellSideScroll:) withObject:[NSNumber numberWithBool:enable] afterDelay:0.2];
+        *targetContentOffset = newOffset;
+        scrollView.decelerationRate = 10.0;
+    }
+}
+
+-(void)enableCellSideScroll:(NSNumber *)enable
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kScrollingMode object:[NSNumber numberWithBool:[enable boolValue]] userInfo:nil];
+}
+
+
+#pragma mark StoryFeedTableViewCell delegate
+
+- (void)willBeginDraggingOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    [self enableScrolling:NO];
+}
+
+- (void)willEndDraggingOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    /*NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    if (indexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }*/
+    [self enableScrolling:YES];
+}
+
+- (void)profileOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    self.vibedIndexPath = [self.tableView indexPathForCell:cell];
+    [(TTTabBarController *)self.rdv_tabBarController presentCreateUserProfileScreenAnimated:YES];
+}
+
+- (void)signupOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    self.vibedIndexPath = [self.tableView indexPathForCell:cell];
+    [[DataManager sharedManager] showLoginScreen];
+}
+
+- (void)vibeOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell completion:(SimpleCompletionBlock)completion {
+    NSIndexPath *companyIndexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath *storyIndexPath = [[cell.collectionView indexPathsForVisibleItems] firstObject];
+    if (companyIndexPath && storyIndexPath) {
+        Company *company = [self.dataContainer objectAtIndex:companyIndexPath.row];
+        Story *story = [company.stories objectAtIndex:storyIndexPath.row];
+        [self likeStory:story inCompany:company completion:completion];
+        //[self wannaWorkInCompany:company completion:completion];
+    } else {
+        if (completion) {
+            completion(NO, nil);
+        }
+    }
+}
+
+- (void)wannaWorkInCompany:(Company *)company completion:(SimpleCompletionBlock)completion {
+    static BOOL loading = NO;
+    if (!loading) {
+        loading = YES;
+        [[DataManager sharedManager] wannaWorkInCompany:company wanna:YES completionHandler:^(BOOL success,NSError *error) {
+            if (success && !error) {
+                [company setWannaWork:YES];
+            } else {
+                if (error) {
+                    [self showWannaWorkFailedAlert];
+                }
+            }
+            loading = NO;
+            if (completion) {
+                completion(success, error);
+            }
+        }];
+    }
+}
+
+- (void)likeStory:(Story *)story inCompany:(Company *)company completion:(SimpleCompletionBlock)completion {
+    static BOOL loading = NO;
+    if (!loading) {
+        loading = YES;
+        [[DataManager sharedManager] likeStory:story like:YES completionHandler:^(BOOL success,NSError *error) {
+            if (success && !error) {
+                [story setUserLike:YES];
+                [company setWannaWork:YES];
+            } else {
+                if (error) {
+                    [self showWannaWorkFailedAlert];
+                }
+            }
+            loading = NO;
+            if (completion) {
+                completion(success, error);
+            }
+        }];
+    }
+}
+
+- (void)storyFeedCellShouldMoveToUserProfile:(StoryFeedTableViewCell *)cell {
+    [(TTTabBarController *)self.rdv_tabBarController moveToTabItem:TabItemUserProfile];
+}
+
+- (void)leftButtonPressedOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    NSIndexPath *collectionIndexPath = [cell.collectionView indexPathsForVisibleItems].firstObject;
+    if (collectionIndexPath.row > 0) {
+        [cell.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:collectionIndexPath.row - 1 inSection:collectionIndexPath.section] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    }
+}
+
+- (void)rightButtonPressedOnStoryFeedTableViewCell:(StoryFeedTableViewCell *)cell {
+    NSIndexPath *collectionIndexPath = [cell.collectionView indexPathsForVisibleItems].firstObject;
+    if (collectionIndexPath.row + 1 < [cell.collectionView numberOfItemsInSection:collectionIndexPath.section]) {
+        [cell.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:collectionIndexPath.row + 1 inSection:collectionIndexPath.section] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    }
+}
+
+#pragma mark StortFeedCollectionViewCell delegate
+
+- (void)commentButtonActionOnStoryFeedCell:(StoryFeedCollectionViewCell *)cell {
+    /*if ([[DataManager sharedManager] isCredentialsSavedInKeychain]) {
+        if (![[DataManager sharedManager] isCVAvailable]) {
+            [(TTTabBarController *)self.rdv_tabBarController moveToTabItem:TabItemUserProfile];
+        } else {
+            Company *company = [self.dataContainer objectAtIndex:cell.indexPath.section];
+            [self presentStoryDetailsForCompany:company story:[company.stories objectAtIndex:cell.indexPath.row] comment:YES];
+        }
+    } else {
+        [[DataManager sharedManager] showLoginScreen];
+    }*/
+}
+
+- (void)shareButtonActionOnStoryFeedCell:(StoryFeedCollectionViewCell *)cell {
+    static BOOL loading = NO;
+    if (!loading) {
+        loading = YES;
+        Company *company = [self.dataContainer objectAtIndex:cell.indexPath.section];
+        Story *story = [company.stories objectAtIndex:cell.indexPath.row];
+        [[SocialManager sharedManager] shareStory:story controller:self completionHandler:^(BOOL success, NSError *error) {
+            if (success && !error) {
+                DLog(@"Shared");
+            } else {
+                //[self showShareToFacebookFailedAlert];
+            }
+            loading = NO;
+        }];
+    }
+}
+
+#pragma mark Interface actions
+
+- (IBAction)showCompanyDetails:(id)sender {
+    UITableViewCell *cell = [self cellForChildView:sender];
+    if (cell) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        Company *company = [self.dataContainer objectAtIndex:indexPath.row];
+        if ([(Story *)company.stories.firstObject storyType] != StoryTypeCreateProfile) {
+            [self presentCompanyDetailsForCompany:company item:MenuItemStories];
+        }
+    }
+}
+
+#pragma mark Alerts
+
+- (void)showWannaWorkFailedAlert {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"It seems that you are interested in quite a few companies, that's very nice\r\nAnyway,It looks like you have reached your maximum daily quota.\r\nFeel free to continue looking for other companies, and tomorrow you will be able to express your interest in them" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil];
+    [alert show];
+}
+
+- (void)showShareToFacebookFailedAlert {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Share to faceobok failed" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil];
+    [alert show];
+}
+
+#pragma mark Misc methods
+
+- (UITableViewCell *)cellForChildView:(UIView *)childView {
+    UIView *view = childView;
+    while (view && (![view isKindOfClass:[UITableViewCell class]])) {
+        view = view.superview;
+    }
+    UITableViewCell *cell = (UITableViewCell *)view;
+    NSAssert([cell isKindOfClass:[UITableViewCell class]], @"");
+    return cell;
+}
+
+- (UICollectionView *)collectionViewForChildView:(UIView *)childView {
+    UIView *view = childView;
+    while (view && (![view isKindOfClass:[UICollectionView class]])) {
+        view = view.superview;
+    }
+    UICollectionView *collectionView = (UICollectionView *)view;
+    NSAssert([collectionView isKindOfClass:[UICollectionView class]], @"");
+    return collectionView;
+}
+
+- (void)createBarButtons {
+    if (!self.selectedCategory) {
+        UIImage *searchImage = [UIImage imageNamed:@"search_icon"];
+        UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, searchImage.size.width, searchImage.size.height)];
+        [searchButton setImage:searchImage forState:UIControlStateNormal];
+        UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+        self.navigationItem.rightBarButtonItems = @[searchBarItem];
+    }
+}
+
+- (void)touchedStatusBar {
+    //[self showNavBarAnimated:YES];
+    [self.tableView setContentOffset:CGPointZero animated:YES];
+}
+
+- (void)enableScrolling:(BOOL)enable {
+    //[self setScrollingEnabled:enable];
+    [self.tableView setScrollEnabled:enable];
+}
+
+- (void)setupConstraints {
+    UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+    UIView * parent = mainWindow;
+    UIView * child = self.loadingViewController.view;
+    [child setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [parent addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[child]|"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:NSDictionaryOfVariableBindings(child)]];
+    [parent addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[child]|"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:NSDictionaryOfVariableBindings(child)]];
+    [parent layoutIfNeeded];
+}
+
+- (void)cancelPlayingMultimediaItems {
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+            StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+            [self cancelPlayingMultimediaCells:storyCell.collectionView.visibleCells];
+        }
+    }
+}
+
+- (void)startPlayingMultimediaItems {
+<<<<<<< HEAD
+    UITableViewCell *cell = self.tableView.visibleCells.firstObject;
+    if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+        StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+        [self startPlayingMultimediaCell:storyCell.collectionView.visibleCells.firstObject inCollectionView:storyCell.collectionView];
+    }
+}
+
+- (void)startPlayingMultimediaCell:(UICollectionViewCell *)cell inCollectionView:(UICollectionView *)collectionView {
+    if (collectionView && [cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+        StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)[self cellForChildView:collectionView];
+        NSIndexPath *currentIndexPath = [self.tableView indexPathForCell:storyCell];
+        NSIndexPath *visibleIndexPath = [[self.tableView indexPathsForVisibleRows] firstObject];
+        if (visibleIndexPath && currentIndexPath && [visibleIndexPath isEqual:currentIndexPath]) {
+            DLog(@"START PLAYING ITEM %@", cell);
+            StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+            AVPlayerLayer *layer = [self.asyncPlayer avPlayerLayerForUrl:multimediaCell.urlString];
+            [multimediaCell addPLayerLayer:layer];
+            [self.asyncPlayer playPlayerWithUrl:multimediaCell.urlString];
+        }
+    }
+}
+
+- (void)startPlayingMultimediaURLString:(NSString *)urlString {
+    NSInteger index = 0;
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+            StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+            Company *company = [self.dataContainer objectAtIndex:index];
+            NSIndexPath *visibleIndexPath = [storyCell.collectionView indexPathsForVisibleItems].firstObject;
+            if (visibleIndexPath) {
+                Story *story = [company.stories objectAtIndex:visibleIndexPath.row];
+                if ([story.videoLink isEqualToString:urlString]) {
+                    [self startPlayingMultimediaCell:storyCell.collectionView.visibleCells.firstObject inCollectionView:storyCell.collectionView];
+                }
+            }
+=======
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+            StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+            [self addPlayingMultimediaCells:storyCell.collectionView.visibleCells];
+            break;
+        }
+    }
+}
+
+- (void)addPlayingMultimediaCells:(NSArray *)cells {
+    for (UICollectionViewCell *cell in cells) {
+        
+        if ([cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+            DLog(@"START PLAYING ITEM %@", cell);
+            StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+
+            [self.asyncPlayer avPlayerLayerForUrl:multimediaCell.urlString withCompletion:^(id result, NSError *error) {
+                AVPlayerLayer *layer = result;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    StoryFeedCollectionViewMultimediaCell *multimediaCellWithVideo;
+                    NSInteger yIndex = 0;
+                    for (UITableViewCell *cell in self.tableView.visibleCells) {
+                        if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+                            StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+                            for (UICollectionViewCell *collectionCell in storyCell.collectionView.visibleCells) {
+                                if ([collectionCell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+                                    multimediaCellWithVideo = (StoryFeedCollectionViewMultimediaCell *)collectionCell;
+                                    if (![multimediaCellWithVideo.urlString isEqualToString:[self.asyncPlayer urlStringOfCurrentlyPlayingInPlayer:layer.player]]) {
+                                        continue;
+                                    }
+                                    
+                                    [multimediaCellWithVideo addPLayerLayer:layer];
+                                    if (yIndex == 0) {
+                                        [multimediaCellWithVideo play];
+                                    }
+                                }
+                            }
+                        }
+                        yIndex++;
+                    }
+                });
+            }];
+>>>>>>> mendy
+            break;
+        }
+        index++;
+    }
+}
+
+- (void)cancelPlayingMultimediaCells:(NSArray *)cells {
+    for (UICollectionViewCell *cell in cells) {
+        if ([cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+            DLog(@"STOPPING PLAYING ITEM %@", cell);
+            StoryFeedCollectionViewMultimediaCell *multimediaCell = (StoryFeedCollectionViewMultimediaCell *)cell;
+           // [self.asyncPlayer pausePlayerWithUrl:multimediaCell.urlString];
+            [multimediaCell pause];
+        }
+    }
+}
+
+- (BOOL)isCellShouldPlay:(StoryFeedTableViewCell *)cell {
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([cell isKindOfClass:[StoryFeedTableViewCell class]]) {
+            StoryFeedTableViewCell *storyCell = (StoryFeedTableViewCell *)cell;
+            
+            for (UICollectionViewCell *cell in storyCell.collectionView.visibleCells) {
+                if ([cell isKindOfClass:[StoryFeedCollectionViewMultimediaCell class]]) {
+                    return YES;
+                }
+            }
+        }
+    }
+
+    return NO;
+}
+
+#pragma mark View lifeCycle
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(touchedStatusBar) name:kTouchedStatusBar object:nil];
+    
+    [self reloadData];
+    
+    if (!self.selectedCategory) {
+        [self.navigationController setNavigationBarHidden:YES animated:animated];
+    } else {
+        [self.navigationItem setTitle:self.selectedCategory.categoryName];
+        [self.navigationController setNavigationBarHidden:NO animated:animated];
+    }
+    //[self followScrollView:self.tableView usingTopConstraint:self.topLayoutConstraint];
+    //[self setOverlayColor:UIColorFromRGB(0x28beff)];
+    
+    //[self showNavBarAnimated:NO];
+    [self enableScrolling:YES];
+}
+
+-(void)handleDeeplink
+{
+    TTDeeplinkManager *manager = DEEPLINK_MANAGER;
+    [manager startWithAlert:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    //[self showNavBarAnimated:NO];
+    //[self stopFollowingScrollView];
+    if (self.selectedCategory) {
+        [[DataManager sharedManager] cancelRequestsForActivityType:ActivityTypeStoryFeed];
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [self cancelPlayingMultimediaItems];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self createBarButtons];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:kLogedInNotification object:nil];
+    self.loadingViewController = [self.storyboard instantiateViewControllerWithIdentifier:[[DataManager sharedManager] silentLogin] ? @"loadingViewController" : @"feedLoadingViewController"];
+    
+    if (!self.selectedCategory) {
+        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+        [mainWindow addSubview:self.loadingViewController.view];
+        [self setupConstraints];
+    }
+    
+    /*if (self.selectedCategory) {
+        [self.navigationItem setTitle:self.selectedCategory.categoryName];
+    } else {
+        [self.navigationItem setTitle:@"TalentTribe"];
+    }*/
+    
+    self.tableView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    
+    [self.tableView addInfiniteScrollingWithActionHandler:^{
+        [self loadPage:self.currentPage + 1];
+    }];
+    
+    self.refresh = [[UIRefreshControl alloc] initWithFrame:self.tableView.frame];
+    [self.refresh addTarget:self action:@selector(refreshFeed) forControlEvents:UIControlEventAllEvents];
+    self.tableView.backgroundView = self.refresh;
+}
+
+- (void)dealloc {
+    [self cancelPlayingMultimediaItems];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[DataManager sharedManager] cancelRequestsForActivityType:ActivityTypeStoryFeed];
+    [[SDWebImagePrefetcher sharedImagePrefetcher] cancelPrefetching];
+}
+
+@end

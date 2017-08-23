@@ -1,0 +1,89 @@
+//
+//  Constants.h
+//  TalentTribe
+//
+//  Created by Bogdan Andresyuk on 3/26/15.
+//  Copyright (c) 2015 OnOApps. All rights reserved.
+//
+
+#ifndef TalentTribe_Constants_h
+#define TalentTribe_Constants_h
+
+#import "NSDictionary+ValueOrNil.h"
+#import "DataManager.h"
+#import "UIAlertView+Blocks.h"
+#import "RIButtonItem.h"
+#import "TTActivityIndicator.h"
+
+#ifdef DEBUG
+#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+
+#ifdef STAGING
+<<<<<<< HEAD
+//#   define SERVER_URL @"https://stageserver2.talenttribe.me"
+=======
+>>>>>>> mendy
+#   define SERVER_URL @"https://qaserver.talenttribe.me"
+#else
+#   define SERVER_URL @"https://stageserver2.talenttribe.me"
+#endif
+
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+#define UIColorFromRGBA(rgbValue, alphaValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:alphaValue]
+
+#define kTouchedStatusBar @"touchedStatusBar"
+#define kDeviceToken @"deviceToken"
+
+#define kPasswordKey @"password"
+#define kEmailKey @"userEmail"
+
+#define kTitleKey @"title"
+#define kValueKey @"value"
+
+#define screenWidth  [UIScreen mainScreen].bounds.size.width
+
+#define screenHeight  [UIScreen mainScreen].bounds.size.height
+
+#define isIphone4  ([[UIScreen mainScreen] bounds].size.height == 480)?TRUE:FALSE
+
+#define isIphone5   ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
+
+#define isIphone6  ([[UIScreen mainScreen] bounds].size.height == 667)?TRUE:FALSE
+
+#define isIphone6Plus  ([[UIScreen mainScreen] bounds].size.height == 736)?TRUE:FALSE
+
+#define ISiOS8 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+
+#define ISiOS7 ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0)
+
+#define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
+
+#define kShowLoginScreenNotification @"showLoginScreenNotification"
+//#define kLogedInNotification @"LoggedInNotification"
+
+#define kSummaryCharacterLimit 280
+
+#define STORYFEED_DEFAULT_PAGE_SIZE 10
+#define STORYFEED_CREATE_PROFILE_INDEX 4
+#define STORYFEED_DEFAULT_GENERAL_ID @"GENERAL_QUESTION_LINE"
+#define STORYCOMMENTS_DEFAULT_PAGE_SIZE 6
+#define USERFEED_DEFAULT_PAGE_SIZE 10
+#define COMPANYFEED_DEFAULT_PAGE_SIZE 10
+#define EXPLORE_DEFAULT_PAGE_SIZE 25
+#define FILTER_DEFAULT_PAGE_SIZE 20
+
+#define kImageMaxSize 1500
+#define kImageQuality 0.7f
+
+//Fonts
+
+#define TITILLIUMWEB_SEMIBOLD(s) [UIFont fontWithName:@"TitilliumWeb-SemiBold" size:s]
+#define TITILLIUMWEB_REGULAR(s) [UIFont fontWithName:@"TitilliumWeb-Regular" size:s]
+#define TITILLIUMWEB_BOLD(s) [UIFont fontWithName:@"TitilliumWeb-Bold" size:s]
+#define TITILLIUMWEB_LIGHT(s) [UIFont fontWithName:@"TitilliumWeb-Light" size:s]
+
+#endif

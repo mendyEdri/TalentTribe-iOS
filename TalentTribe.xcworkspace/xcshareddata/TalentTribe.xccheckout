@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C7237E66-D848-478F-877F-7CD4550172B8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TalentTribe</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3E8F2E3BC75E382E36D961751BD8D60F7B05726D</key>
+		<string>https://bitbucket.org/OnOApps/talenttribe.git</string>
+		<key>4406CD5F385C6BA225A559AE0BAC13B01944CF44</key>
+		<string>https://bitbucket.org/talenttribeltd/tt_ios_master.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TalentTribe.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3E8F2E3BC75E382E36D961751BD8D60F7B05726D</key>
+		<string>../../talenttribe</string>
+		<key>4406CD5F385C6BA225A559AE0BAC13B01944CF44</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/talenttribeltd/tt_ios_master.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>4406CD5F385C6BA225A559AE0BAC13B01944CF44</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3E8F2E3BC75E382E36D961751BD8D60F7B05726D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>talenttribe</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>4406CD5F385C6BA225A559AE0BAC13B01944CF44</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tt_ios_master</string>
+		</dict>
+	</array>
+</dict>
+</plist>

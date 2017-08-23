@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Raleway-Bold.ttf">
+            <string>Raleway-Bold</string>
+        </mutableArray>
+        <mutableArray key="Raleway-Light.ttf">
+            <string>Raleway-Light</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="vibeCell" id="v6Q-UB-rfp" customClass="StoryFeedCreateUserProfileCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LrK-lZ-72D" userLabel="Container">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Like the vibe of a company?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x18-Zt-LkI" customClass="TTDynamicLabel">
+                                <rect key="frame" x="8" y="60" width="304" height="96"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="96" id="Mf3-ot-xCI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Raleway-Bold" family="Raleway" pointSize="34"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart" translatesAutoresizingMaskIntoConstraints="NO" id="vgR-TJ-48h">
+                                <rect key="frame" x="251" y="183" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="hdV-IX-wXT"/>
+                                    <constraint firstAttribute="width" constant="50" id="hjB-r5-07G"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect with them by &quot;Vibing&quot;" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gAO-Dk-OfC" customClass="TTDynamicLabel">
+                                <rect key="frame" x="15" y="176" width="215" height="69"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="69" id="UGN-Gw-nbH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Raleway-Light" family="Raleway" pointSize="24"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.090196078431372548" green="0.70196078431372544" blue="0.91764705882352937" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vgR-TJ-48h" secondAttribute="trailing" constant="15" id="8xH-tX-XKg"/>
+                            <constraint firstItem="x18-Zt-LkI" firstAttribute="bottom" secondItem="LrK-lZ-72D" secondAttribute="centerY" constant="-4" id="AMG-TG-gSL"/>
+                            <constraint firstItem="vgR-TJ-48h" firstAttribute="top" secondItem="x18-Zt-LkI" secondAttribute="bottom" constant="27" id="IDE-wq-bHF"/>
+                            <constraint firstAttribute="trailing" secondItem="x18-Zt-LkI" secondAttribute="trailing" constant="8" id="Je9-tr-lok"/>
+                            <constraint firstItem="gAO-Dk-OfC" firstAttribute="top" secondItem="x18-Zt-LkI" secondAttribute="bottom" constant="20" id="We2-DE-iU1"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gAO-Dk-OfC" secondAttribute="trailing" constant="87" id="bUu-u7-71k"/>
+                            <constraint firstItem="vgR-TJ-48h" firstAttribute="leading" secondItem="gAO-Dk-OfC" secondAttribute="trailing" constant="21" id="cYV-Em-FGi"/>
+                            <constraint firstItem="x18-Zt-LkI" firstAttribute="leading" secondItem="LrK-lZ-72D" secondAttribute="leading" constant="8" id="tJ4-7Q-saN"/>
+                            <constraint firstItem="gAO-Dk-OfC" firstAttribute="leading" secondItem="LrK-lZ-72D" secondAttribute="leading" constant="15" id="yIg-z4-HTn"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="LrK-lZ-72D" secondAttribute="bottom" id="5Lw-Sz-HrE"/>
+                <constraint firstAttribute="trailing" secondItem="LrK-lZ-72D" secondAttribute="trailing" id="F6Y-Tf-bOo"/>
+                <constraint firstItem="LrK-lZ-72D" firstAttribute="top" secondItem="v6Q-UB-rfp" secondAttribute="top" id="gKW-en-1Rz"/>
+                <constraint firstItem="LrK-lZ-72D" firstAttribute="leading" secondItem="v6Q-UB-rfp" secondAttribute="leading" id="vbe-ab-Mj6"/>
+            </constraints>
+            <connections>
+                <outlet property="containerView" destination="LrK-lZ-72D" id="EaO-Yv-Bld"/>
+                <outlet property="titleLabel" destination="gAO-Dk-OfC" id="hWi-Wd-X3M"/>
+            </connections>
+            <point key="canvasLocation" x="325" y="253"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="heart" width="45" height="40"/>
+    </resources>
+</document>

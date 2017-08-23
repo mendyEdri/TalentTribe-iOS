@@ -1,0 +1,247 @@
+//
+//  DetailsPageViewController.m
+//  TalentTribe
+//
+//  Created by Mendy on 27/10/2015.
+//  Copyright © 2015 OnOApps. All rights reserved.
+//
+
+#import "DetailsPageViewController.h"
+#import "StoryDetailsViewController.h"
+#import "CompanyProfileViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+
+@interface DetailsPageViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, StoryDetailsProtocol>
+@property (strong, nonatomic) UIPageViewController *pageViewController;
+@property (strong, nonatomic) NSMutableArray *pages;
+@property (nonatomic, strong) UIBarButtonItem *shareBarItem;
+@property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, weak) IBOutlet UIView *headerView;
+@property (nonatomic, weak) IBOutlet UIImageView *imageView;
+@property (nonatomic, weak) IBOutlet UIImageView *companyImageView;
+@property (nonatomic, weak) IBOutlet UILabel *companyTitle;
+@property (nonatomic, strong) StoryDetailsViewController *currentViewController;
+@property (nonatomic, strong) UIButton *rightArrow;
+@property (nonatomic, strong) UIButton *leftArrow;
+
+@end
+
+@implementation DetailsPageViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // Create page view controller
+    self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PageViewController"];
+    self.pageViewController.dataSource = self;
+    self.pageViewController.delegate = self;
+    self.pages = [[NSMutableArray alloc] init];
+    
+    for (Story *story in self.company.stories) {
+        StoryDetailsViewController *storyDetails = [self.storyboard instantiateViewControllerWithIdentifier:@"storyCommentsViewController"];
+        storyDetails.company = self.company;
+        storyDetails.currentStory = story;
+        storyDetails.storyDetailsControllerType = StoryDetailsTypePageController;
+        [self.pages addObject:story];
+    }
+
+    [self.pageViewController setViewControllers:@[[self viewControllerAtIndex:self.startingIndex]] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+    
+    // Change the size of page view controller
+    self.pageViewController.view.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds));
+    [self addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
+    
+    [self.view bringSubviewToFront:self.headerView];
+    [self loadHeaderViewData];
+    
+    [self createStoriesArrowsButton];
+    [self hideArrowsButtonsLeft:NO right:NO];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self createCustomBackButton];
+}
+
+- (void)loadHeaderViewData {
+    StoryDetailsViewController *storyVC = [self viewControllerAtIndex:self.startingIndex];
+    [storyVC.dragVibeView setCurrentCompany:self.company];
+    
+    if (self.company.companyLogo) {
+        [self.companyImageView sd_setImageWithURL:[NSURL URLWithString:self.company.companyLogo] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {//
+<<<<<<< HEAD
+            [storyVC.dragVibeView.dragCompanyImageView setImage:image];
+=======
+            //[self.view addSubview:storyVC.dragVibeView];
+            //[storyVC.dragVibeView.dragCompanyImageView setImage:image];
+>>>>>>> amitDev
+            [storyVC setupDragViewOnView:self.view];
+        }];
+    }
+    if (self.company.companyName) {
+        self.companyTitle.attributedText = [TTUtils attributedCompanyName:self.company.companyName industry:self.company.industry];
+        //storyVC.dragVibeView.dragCompanyLabel.text = self.company.companyName;
+    }
+    
+//    [self updateHeaderButtonsState]; // should delegate to updat mendy
+}
+
+#pragma mark - Page View Controller Data Source
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+    NSUInteger index = ((StoryDetailsViewController*) viewController).pageIndex;
+    self.currentIndex = index;
+    [self hideArrowsButtonsLeft:NO right:NO];
+    if ((index == 0) || (index == NSNotFound)) {
+        return nil;
+    }
+    
+    index--;
+    return [self viewControllerAtIndex:index];
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+    NSUInteger index = ((StoryDetailsViewController*) viewController).pageIndex;
+    self.currentIndex = index;
+    [self hideArrowsButtonsLeft:NO right:NO];
+    if (index == NSNotFound) {
+        return nil;
+    }
+    
+    index++;
+    if (index == self.pages.count) {
+        return nil;
+    }
+    return [self viewControllerAtIndex:index];
+}
+
+- (StoryDetailsViewController *)viewControllerAtIndex:(NSUInteger)index {
+    if ((index >= self.pages.count)) {
+        return nil;
+    }
+    
+    self.currentIndex = index;
+    
+    // Create a new view controller and pass suitable data. (TT is change story object)
+    StoryDetailsViewController *pageContentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"storyCommentsViewController"];
+    pageContentViewController.company = self.company;
+    pageContentViewController.currentStory = self.pages[index];
+    pageContentViewController.pageIndex = index;
+    pageContentViewController.storyDetailsControllerType = StoryDetailsTypePageController;
+    [pageContentViewController createBarButtonItem:self.navigationItem];
+    pageContentViewController.delegate = self;
+    self.currentViewController = pageContentViewController;
+    return pageContentViewController;
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
+}
+
+- (void)shareButtonPressed {
+    StoryDetailsViewController *storyDetails = [self viewControllerAtIndex:self.currentIndex];
+    [storyDetails shareStory:self.currentStory];
+}
+
+- (void)back {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - StoryDetailsViewController Delegate
+
+- (void)headerViewBackgroundImage:(UIImage *)backgroundImage {
+    backgroundImage ? [self hideArrowsButtonsLeft:YES right:YES] : [self hideArrowsButtonsLeft:NO right:NO];
+    backgroundImage ? [self endableScrollToSides:NO] : [self endableScrollToSides:YES];
+    self.imageView.image = backgroundImage;
+}
+
+#pragma mark ContentView Methods
+
+- (void)createStoriesArrowsButton {
+    self.rightArrow = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.leftArrow = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    CGFloat buttonDiameter = 60;
+    self.rightArrow.frame = CGRectMake(CGRectGetWidth([UIScreen mainScreen].bounds) - buttonDiameter, (CGRectGetWidth([UIScreen mainScreen].bounds) / 2) - buttonDiameter/2, buttonDiameter, buttonDiameter);
+    [self.rightArrow setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
+    [self.rightArrow addTarget:self action:@selector(moveNext) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.rightArrow];
+    
+    self.leftArrow.frame = CGRectMake(0, (CGRectGetWidth([UIScreen mainScreen].bounds) / 2) - buttonDiameter/2, buttonDiameter, buttonDiameter);
+    [self.leftArrow setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [self.leftArrow addTarget:self action:@selector(moveBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.leftArrow];
+}
+
+- (void)hideArrowsButtonsLeft:(BOOL)hideLeft right:(BOOL)hideRight {
+    if (self.pages.count == 1) {
+        hideLeft = YES;
+        hideRight = YES;
+    } else if (self.currentIndex == 0) {
+        hideLeft = YES;
+    } else if (self.currentIndex == self.pages.count-1) {
+        hideRight = YES;
+    }
+    
+    [UIView animateWithDuration:0.8 delay:0.1 usingSpringWithDamping:0.7 initialSpringVelocity:12.0 options:kNilOptions animations:^{
+        hideLeft ? [self alphaView:self.leftArrow alpha:0.0] : [self alphaView:self.leftArrow alpha:1.0];
+        hideRight ? [self alphaView:self.rightArrow alpha:0.0] : [self alphaView:self.rightArrow alpha:1.0];
+    } completion:nil];
+}
+
+- (void)alphaView:(UIView *)view alpha:(CGFloat)alpha {
+    view.alpha = alpha;
+}
+
+- (void)endableScrollToSides:(BOOL)enable {
+    for (UIScrollView *view in self.pageViewController.view.subviews) {
+        if ([view isKindOfClass:[UIScrollView class]]) {
+            view.scrollEnabled = enable;
+        }
+    }
+}
+
+- (void)createCustomBackButton {
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *backImage = [UIImage imageNamed:@"back"];
+    [backButton setImage:backImage forState:UIControlStateNormal];
+    [backButton setImage:[UIImage imageNamed:@"back_s"] forState:UIControlStateHighlighted];
+    [backButton setFrame:CGRectMake(0, 0, backImage.size.width, backImage.size.height)];
+    [backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backBarItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+
+    self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.leftBarButtonItem = backBarItem;
+}
+
+- (IBAction)showCompanyDetails:(id)sender {
+    if (self.canOpenCompanyDetails) {
+        [self presentCompanyDetailsForCompany:self.company item:MenuItemStories];
+    }
+}
+
+- (void)moveNext {
+    UIViewController *vc = [self pageViewController:self.pageViewController viewControllerAfterViewController:[self viewControllerAtIndex:self.currentIndex]];
+    [self.pageViewController setViewControllers:@[vc] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    NSLog(@"Current Index %ld", (long)self.currentIndex);
+    [self hideArrowsButtonsLeft:NO right:NO];
+}
+
+- (void)moveBack {
+    UIViewController *vc = [self pageViewController:self.pageViewController viewControllerBeforeViewController:[self viewControllerAtIndex:self.currentIndex]];
+    [self.pageViewController setViewControllers:@[vc] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+    NSLog(@"Current Index %ld", (long)self.currentIndex);
+    [self hideArrowsButtonsLeft:NO right:NO];
+}
+
+- (void)presentCompanyDetailsForCompany:(Company *)company item:(MenuItem)item {
+    CompanyProfileViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"companyProfileViewController"];
+    controller.company = company;
+    controller.currentSelectedItem = item;
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+@end

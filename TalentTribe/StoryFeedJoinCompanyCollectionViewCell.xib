@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Raleway-Bold.ttf">
+            <string>Raleway-Bold</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="joinCompanyCell" id="Le8-i8-FY1" customClass="StoryFeedJoinCompanyCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-sT-Mb2">
+                        <rect key="frame" x="8" y="71" width="304" height="179"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <string key="text">To feature your company on TalentTribe 
+Tap Here!</string>
+                        <fontDescription key="fontDescription" name="Raleway-Bold" family="Raleway" pointSize="38"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <color key="backgroundColor" red="0.0" green="0.70196078429999997" blue="0.91764705879999997" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="ClH-sT-Mb2" firstAttribute="centerY" secondItem="Le8-i8-FY1" secondAttribute="centerY" id="4gW-IX-Fyd"/>
+                <constraint firstItem="ClH-sT-Mb2" firstAttribute="centerX" secondItem="Le8-i8-FY1" secondAttribute="centerX" id="XRb-Uv-ZuQ"/>
+                <constraint firstAttribute="trailing" secondItem="ClH-sT-Mb2" secondAttribute="trailing" constant="8" id="lb9-q8-ifi"/>
+                <constraint firstItem="ClH-sT-Mb2" firstAttribute="leading" secondItem="Le8-i8-FY1" secondAttribute="leading" constant="8" id="m7S-H6-Lx4"/>
+            </constraints>
+            <point key="canvasLocation" x="390" y="310"/>
+        </collectionViewCell>
+    </objects>
+</document>

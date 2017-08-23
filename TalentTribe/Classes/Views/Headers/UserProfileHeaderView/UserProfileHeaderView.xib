@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="TitilliumWeb-Bold.ttf">
+            <string>TitilliumWeb-Bold</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-Regular.ttf">
+            <string>TitilliumWeb-Regular</string>
+            <string>TitilliumWeb-Regular</string>
+            <string>TitilliumWeb-Regular</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-SemiBold.ttf">
+            <string>TitilliumWeb-SemiBold</string>
+            <string>TitilliumWeb-SemiBold</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="yJw-jh-oEi" userLabel="Header Container" customClass="UserProfileHeaderView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="160"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ho-hu-sIC" userLabel="Back Button">
+                    <rect key="frame" x="10" y="30" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="vi1-W0-Ivm"/>
+                        <constraint firstAttribute="width" constant="30" id="ztW-8O-e2e"/>
+                    </constraints>
+                    <state key="normal" image="back">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted" image="back_s"/>
+                    <connections>
+                        <action selector="backButtonPressed:" destination="yJw-jh-oEi" eventType="touchUpInside" id="pcf-fy-BDU"/>
+                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JEs-fe-zR4" userLabel="Next Button">
+                    <rect key="frame" x="260" y="30" width="50" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="50" id="oeh-3t-Uw0"/>
+                        <constraint firstAttribute="height" constant="30" id="qBU-b5-xuR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="TitilliumWeb-Bold" family="Titillium Web" pointSize="19"/>
+                    <state key="normal" title="Next"/>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="nextButtonPressed:" destination="yJw-jh-oEi" eventType="touchUpInside" id="umD-0C-6Kb"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PKL-pf-uZ2" userLabel="Image Button" customClass="TTRoundButton">
+                    <rect key="frame" x="120" y="30" width="80" height="80"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.10000000000000001" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" placeholder="YES" id="BYW-Zh-YH4"/>
+                        <constraint firstAttribute="height" constant="80" placeholder="YES" id="zYh-9r-SrJ"/>
+                    </constraints>
+                    <state key="normal">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="imageButtonPressed:" destination="yJw-jh-oEi" eventType="touchUpInside" id="5ZT-Hf-f18"/>
+                    </connections>
+                </button>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ueg-oy-O6J" userLabel="Input Container">
+                    <rect key="frame" x="0.0" y="105" width="320" height="50"/>
+                    <subviews>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S0b-DI-LBB" userLabel="First Name">
+                            <rect key="frame" x="15" y="5" width="135" height="25"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="25" id="xtr-1K-Sgg"/>
+                            </constraints>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="17"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                            <connections>
+                                <outlet property="delegate" destination="yJw-jh-oEi" id="Ujy-Ba-Xr4"/>
+                            </connections>
+                        </textField>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iTF-eB-0QN" userLabel="Last Name">
+                            <rect key="frame" x="170" y="5" width="135" height="25"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="17"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                            <connections>
+                                <outlet property="delegate" destination="yJw-jh-oEi" id="W2L-Ga-xWf"/>
+                            </connections>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OBL-W1-XER" customClass="TTOnePixelView" customModule="TT_Staging" customModuleProvider="target">
+                            <rect key="frame" x="15" y="35" width="135" height="1"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="ESM-4E-Vyu"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDe-a0-17q" customClass="TTOnePixelView" customModule="TT_Staging" customModuleProvider="target">
+                            <rect key="frame" x="170" y="35" width="135" height="1"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="AVq-un-lzg"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="7s2-Nh-Dtq"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="height" secondItem="iTF-eB-0QN" secondAttribute="height" id="BSi-bn-UXc"/>
+                        <constraint firstItem="DDe-a0-17q" firstAttribute="leading" secondItem="iTF-eB-0QN" secondAttribute="leading" id="FXd-j3-Qvu"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="leading" secondItem="ueg-oy-O6J" secondAttribute="leading" constant="15" id="PI9-bu-Zf8"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="trailing" secondItem="OBL-W1-XER" secondAttribute="trailing" id="UI3-n1-6fs"/>
+                        <constraint firstItem="OBL-W1-XER" firstAttribute="top" secondItem="S0b-DI-LBB" secondAttribute="bottom" constant="5" id="YIP-1D-b6w"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="leading" secondItem="OBL-W1-XER" secondAttribute="leading" id="akH-dt-odo"/>
+                        <constraint firstItem="DDe-a0-17q" firstAttribute="trailing" secondItem="iTF-eB-0QN" secondAttribute="trailing" id="e5X-fG-9Lk"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="centerY" secondItem="iTF-eB-0QN" secondAttribute="centerY" id="nXw-8Q-RLg"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="width" secondItem="iTF-eB-0QN" secondAttribute="width" id="plq-7p-kmB"/>
+                        <constraint firstAttribute="trailing" secondItem="iTF-eB-0QN" secondAttribute="trailing" constant="15" id="rtr-Hm-tkI"/>
+                        <constraint firstItem="iTF-eB-0QN" firstAttribute="leading" secondItem="S0b-DI-LBB" secondAttribute="trailing" constant="20" id="sn8-QV-fFK"/>
+                        <constraint firstItem="DDe-a0-17q" firstAttribute="top" secondItem="iTF-eB-0QN" secondAttribute="bottom" constant="5" id="uen-NI-OHg"/>
+                        <constraint firstItem="S0b-DI-LBB" firstAttribute="top" secondItem="ueg-oy-O6J" secondAttribute="top" constant="5" id="wpz-hN-wl5"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Rm-hI-DBQ" userLabel="Name Container">
+                    <rect key="frame" x="0.0" y="105" width="320" height="50"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kLp-Xn-vNA" userLabel="User Title">
+                            <rect key="frame" x="10" y="0.0" width="300" height="25"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="20"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VYC-wa-aGE" userLabel="User Position">
+                            <rect key="frame" x="10" y="25" width="300" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="20" id="I74-Ag-s2c"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="15"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="VYC-wa-aGE" firstAttribute="leading" secondItem="8Rm-hI-DBQ" secondAttribute="leading" constant="10" id="4Id-jY-dA0"/>
+                        <constraint firstItem="kLp-Xn-vNA" firstAttribute="top" secondItem="8Rm-hI-DBQ" secondAttribute="top" id="5Mn-H9-g0j"/>
+                        <constraint firstAttribute="bottom" secondItem="VYC-wa-aGE" secondAttribute="bottom" constant="5" id="EJ4-jb-xIm"/>
+                        <constraint firstItem="kLp-Xn-vNA" firstAttribute="leading" secondItem="8Rm-hI-DBQ" secondAttribute="leading" constant="10" id="Pa4-dQ-Pf4"/>
+                        <constraint firstItem="VYC-wa-aGE" firstAttribute="top" secondItem="kLp-Xn-vNA" secondAttribute="bottom" id="Qoy-1M-Rk5"/>
+                        <constraint firstAttribute="height" constant="50" id="US0-qi-kWh"/>
+                        <constraint firstAttribute="trailing" secondItem="VYC-wa-aGE" secondAttribute="trailing" constant="10" id="coC-cz-tFr"/>
+                        <constraint firstAttribute="trailing" secondItem="kLp-Xn-vNA" secondAttribute="trailing" constant="10" id="t5z-uH-O7V"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EvU-pb-kQZ" userLabel="User Title">
+                    <rect key="frame" x="10" y="80" width="300" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" placeholder="YES" id="XM7-Bm-96M"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="TitilliumWeb-SemiBold" family="Titillium Web" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="JEs-fe-zR4" secondAttribute="trailing" constant="10" id="31Y-VG-juk"/>
+                <constraint firstItem="JEs-fe-zR4" firstAttribute="top" secondItem="yJw-jh-oEi" secondAttribute="top" constant="30" id="3Rn-b7-wC5"/>
+                <constraint firstAttribute="bottom" secondItem="ueg-oy-O6J" secondAttribute="bottom" constant="5" id="3Uh-ln-CpB"/>
+                <constraint firstItem="ueg-oy-O6J" firstAttribute="leading" secondItem="yJw-jh-oEi" secondAttribute="leading" id="5Ha-dj-tpa"/>
+                <constraint firstAttribute="trailing" secondItem="8Rm-hI-DBQ" secondAttribute="trailing" id="7bZ-lM-ExR"/>
+                <constraint firstItem="9ho-hu-sIC" firstAttribute="leading" secondItem="yJw-jh-oEi" secondAttribute="leading" constant="10" id="Kzc-cw-EcZ"/>
+                <constraint firstItem="PKL-pf-uZ2" firstAttribute="centerX" secondItem="yJw-jh-oEi" secondAttribute="centerX" placeholder="YES" id="Nec-7W-6Wb"/>
+                <constraint firstAttribute="trailing" secondItem="EvU-pb-kQZ" secondAttribute="trailing" constant="10" placeholder="YES" id="SQe-Hv-n6X"/>
+                <constraint firstItem="PKL-pf-uZ2" firstAttribute="top" secondItem="yJw-jh-oEi" secondAttribute="top" constant="30" placeholder="YES" id="eZ2-1D-Y6O"/>
+                <constraint firstItem="EvU-pb-kQZ" firstAttribute="leading" secondItem="yJw-jh-oEi" secondAttribute="leading" constant="10" placeholder="YES" id="gS2-OS-bo3"/>
+                <constraint firstItem="EvU-pb-kQZ" firstAttribute="top" secondItem="yJw-jh-oEi" secondAttribute="top" constant="80" placeholder="YES" id="iYV-9X-tuH"/>
+                <constraint firstItem="8Rm-hI-DBQ" firstAttribute="centerY" secondItem="ueg-oy-O6J" secondAttribute="centerY" id="n8i-9r-FMI"/>
+                <constraint firstItem="9ho-hu-sIC" firstAttribute="top" secondItem="yJw-jh-oEi" secondAttribute="top" constant="30" id="qaV-ac-TO2"/>
+                <constraint firstAttribute="trailing" secondItem="ueg-oy-O6J" secondAttribute="trailing" id="tJP-5s-s09"/>
+                <constraint firstItem="8Rm-hI-DBQ" firstAttribute="leading" secondItem="yJw-jh-oEi" secondAttribute="leading" id="udi-nM-sJY"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="animationTitleLabel" destination="EvU-pb-kQZ" id="7wY-WV-rkK"/>
+                <outlet property="backButton" destination="9ho-hu-sIC" id="Xth-zD-X5H"/>
+                <outlet property="bottomConstraint" destination="3Uh-ln-CpB" id="Tcq-fS-X5A"/>
+                <outlet property="inputContainer" destination="ueg-oy-O6J" id="Mra-gm-inx"/>
+                <outlet property="inputFirstNameField" destination="S0b-DI-LBB" id="IEm-XC-oVK"/>
+                <outlet property="inputFirstNameUnderline" destination="OBL-W1-XER" id="uSr-df-DAL"/>
+                <outlet property="inputLastNameField" destination="iTF-eB-0QN" id="EoA-5O-Rib"/>
+                <outlet property="inputLastNameUnderline" destination="DDe-a0-17q" id="wfc-Sb-dGn"/>
+                <outlet property="nameContainer" destination="8Rm-hI-DBQ" id="W72-HG-IHk"/>
+                <outlet property="nextButton" destination="JEs-fe-zR4" id="uOD-WN-IJG"/>
+                <outlet property="userImageButton" destination="PKL-pf-uZ2" id="HO1-g1-JjU"/>
+                <outlet property="userPositionLabel" destination="VYC-wa-aGE" id="ILT-6X-DpZ"/>
+                <outlet property="userTitleLabel" destination="kLp-Xn-vNA" id="GSN-xr-Lun"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="back" width="10" height="19"/>
+        <image name="back_s" width="10" height="18"/>
+    </resources>
+</document>

@@ -1,0 +1,24 @@
+//
+//  TalentTribe_prefix.pch
+//  TalentTribe
+//
+//  Created by Bogdan Andresyuk on 3/24/15.
+//  Copyright (c) 2015 OnOApps. All rights reserved.
+//
+
+#ifndef TalentTribe_TalentTribe_prefix_pch
+#define TalentTribe_TalentTribe_prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#endif
+
+#import "Constants.h"
+#import "TTUtils.h"
+
+
+#endif

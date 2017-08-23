@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="TitilliumWeb-Regular.ttf">
+            <string>TitilliumWeb-Regular</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TopMessageView">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BSw-es-2iF">
+                    <rect key="frame" x="16" y="23" width="343" height="51"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="16"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="BSw-es-2iF" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="8.5" id="65F-1x-RIm"/>
+                <constraint firstItem="BSw-es-2iF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="7kJ-gk-a1I"/>
+                <constraint firstItem="BSw-es-2iF" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="23" id="ETF-e2-x1k"/>
+                <constraint firstAttribute="bottom" secondItem="BSw-es-2iF" secondAttribute="bottom" constant="9" id="lvM-za-fdR"/>
+                <constraint firstAttribute="trailing" secondItem="BSw-es-2iF" secondAttribute="trailing" constant="16" id="v30-WT-6MH"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="lvM-za-fdR"/>
+                </mask>
+            </variation>
+            <connections>
+                <outlet property="label" destination="BSw-es-2iF" id="b7G-ZJ-ZQu"/>
+            </connections>
+            <point key="canvasLocation" x="-44" y="-144"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="TitilliumWeb-Bold.ttf">
+            <string>TitilliumWeb-Bold</string>
+            <string>TitilliumWeb-Bold</string>
+            <string>TitilliumWeb-Bold</string>
+        </mutableArray>
+        <mutableArray key="TitilliumWeb-Regular.ttf">
+            <string>TitilliumWeb-Regular</string>
+            <string>TitilliumWeb-Regular</string>
+            <string>TitilliumWeb-Regular</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="enC-mT-mgn" customClass="TTEmailAlertView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W6g-0c-aWW">
+                    <rect key="frame" x="161" y="275" width="0.0" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="Wgf-I8-9o6"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="TitilliumWeb-Bold" family="Titillium Web" pointSize="26"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ycf-gE-n5S" userLabel="Container">
+                    <rect key="frame" x="8" y="111" width="304" height="329"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You will get an email to upload your CV" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qZq-Wo-Eet">
+                            <rect key="frame" x="18" y="137" width="268" height="46"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="46" id="6eW-l6-pZq"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="Q8b-ec-JIY"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="15"/>
+                            <color key="textColor" red="0.074509803921568626" green="0.72549019607843135" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qyi-KR-SQP" userLabel="Close">
+                            <rect key="frame" x="274" y="14" width="16" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="16" id="tn4-Qr-Kej"/>
+                            </constraints>
+                            <state key="normal" image="close"/>
+                            <connections>
+                                <action selector="closeButtonPressed:" destination="enC-mT-mgn" eventType="touchUpInside" id="TZI-SR-pEO"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8xD-LB-mdL" userLabel="Cancel">
+                            <rect key="frame" x="297" y="222" width="250" height="30"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="20"/>
+                            <state key="normal">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="cancelButtonPressed:" destination="enC-mT-mgn" eventType="touchUpInside" id="d4o-22-vEx"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K97-ON-sbu" userLabel="Large Cancel" customClass="TTRoundedCornersButton">
+                            <rect key="frame" x="64" y="265" width="176" height="44"/>
+                            <color key="backgroundColor" red="0.074509803921568626" green="0.72549019607843135" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="TA8-Xu-Ogo"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Bold" family="Titillium Web" pointSize="20"/>
+                            <state key="normal">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="cancelButtonPressed:" destination="enC-mT-mgn" eventType="touchUpInside" id="tuj-ue-0KL"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mvr-dQ-ZdA">
+                            <rect key="frame" x="28" y="39" width="248" height="104"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="104" id="MLI-Kn-qsl"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Bold" family="Titillium Web" pointSize="30"/>
+                            <color key="textColor" red="0.074509803921568626" green="0.72549019607843135" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email" placeholder="Email" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dBE-5M-DDg">
+                            <rect key="frame" x="32" y="198" width="240" height="38"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="tintColor" red="0.074509803920000006" green="0.72549019609999998" blue="0.98823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="38" id="tja-Xr-UwJ"/>
+                            </constraints>
+                            <color key="textColor" red="0.074509803921568626" green="0.72549019607843135" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" name="TitilliumWeb-Regular" family="Titillium Web" pointSize="18"/>
+                            <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                            <connections>
+                                <outlet property="delegate" destination="enC-mT-mgn" id="CE3-cy-OR5"/>
+                            </connections>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7em-8H-s2I">
+                            <rect key="frame" x="45" y="238" width="213" height="1"/>
+                            <color key="backgroundColor" red="0.074509803920000006" green="0.72549019609999998" blue="0.98823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="qyi-KR-SQP" secondAttribute="trailing" constant="14" id="2dE-nf-7tS"/>
+                        <constraint firstItem="K97-ON-sbu" firstAttribute="top" secondItem="7em-8H-s2I" secondAttribute="bottom" constant="26" id="3PU-dC-eNX"/>
+                        <constraint firstItem="dBE-5M-DDg" firstAttribute="leading" secondItem="Ycf-gE-n5S" secondAttribute="leading" constant="32" id="5aY-wf-edK"/>
+                        <constraint firstItem="qZq-Wo-Eet" firstAttribute="centerY" secondItem="Ycf-gE-n5S" secondAttribute="centerY" constant="-4.5" id="8Cd-HN-xgE"/>
+                        <constraint firstItem="mvr-dQ-ZdA" firstAttribute="leading" secondItem="Ycf-gE-n5S" secondAttribute="leading" constant="28" id="9F4-my-30N"/>
+                        <constraint firstItem="mvr-dQ-ZdA" firstAttribute="centerX" secondItem="dBE-5M-DDg" secondAttribute="centerX" id="DYy-eh-qJP"/>
+                        <constraint firstAttribute="trailing" secondItem="7em-8H-s2I" secondAttribute="trailing" constant="46" id="FVy-cj-rNP"/>
+                        <constraint firstItem="qyi-KR-SQP" firstAttribute="top" secondItem="Ycf-gE-n5S" secondAttribute="top" constant="14" id="K1W-6y-A68"/>
+                        <constraint firstItem="qZq-Wo-Eet" firstAttribute="centerX" secondItem="dBE-5M-DDg" secondAttribute="centerX" id="Nbl-uA-5o6"/>
+                        <constraint firstItem="K97-ON-sbu" firstAttribute="leading" secondItem="Ycf-gE-n5S" secondAttribute="leading" constant="64" id="ayS-Wb-295"/>
+                        <constraint firstItem="7em-8H-s2I" firstAttribute="top" secondItem="dBE-5M-DDg" secondAttribute="bottom" constant="2" id="cDU-U0-hr2"/>
+                        <constraint firstItem="7em-8H-s2I" firstAttribute="leading" secondItem="Ycf-gE-n5S" secondAttribute="leading" constant="45" id="dwx-j1-cG9"/>
+                        <constraint firstAttribute="bottom" secondItem="K97-ON-sbu" secondAttribute="bottom" constant="20" id="gIg-S3-I3Q"/>
+                        <constraint firstItem="dBE-5M-DDg" firstAttribute="top" secondItem="mvr-dQ-ZdA" secondAttribute="bottom" constant="55" id="gx4-nX-yi3"/>
+                        <constraint firstAttribute="height" constant="329" id="nl1-qE-oWK"/>
+                        <constraint firstItem="qZq-Wo-Eet" firstAttribute="leading" secondItem="Ycf-gE-n5S" secondAttribute="leading" constant="18" id="rrn-mg-SiD"/>
+                        <constraint firstItem="K97-ON-sbu" firstAttribute="top" relation="greaterThanOrEqual" secondItem="dBE-5M-DDg" secondAttribute="bottom" constant="29" id="xA7-hI-eLZ"/>
+                        <constraint firstItem="mvr-dQ-ZdA" firstAttribute="top" secondItem="qyi-KR-SQP" secondAttribute="bottom" constant="9" id="xPT-bo-oLm"/>
+                        <constraint firstAttribute="trailing" secondItem="K97-ON-sbu" secondAttribute="trailing" constant="64" id="xUP-TG-D5K"/>
+                        <constraint firstAttribute="trailing" secondItem="dBE-5M-DDg" secondAttribute="trailing" constant="32" id="yMl-Ey-NTh"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.36633133561643838" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Ycf-gE-n5S" firstAttribute="centerY" secondItem="enC-mT-mgn" secondAttribute="centerY" constant="-8.5" id="3dC-Ca-LNz"/>
+                <constraint firstItem="W6g-0c-aWW" firstAttribute="centerX" secondItem="Ycf-gE-n5S" secondAttribute="centerX" constant="1" id="5pQ-tD-YOG"/>
+                <constraint firstAttribute="trailing" secondItem="Ycf-gE-n5S" secondAttribute="trailing" constant="8" id="7G0-4c-eT2"/>
+                <constraint firstItem="Ycf-gE-n5S" firstAttribute="leading" secondItem="enC-mT-mgn" secondAttribute="leading" constant="8" id="IiA-4E-6rw"/>
+                <constraint firstItem="W6g-0c-aWW" firstAttribute="top" secondItem="enC-mT-mgn" secondAttribute="top" constant="275" id="KRe-KM-Hnk"/>
+                <constraint firstItem="Ycf-gE-n5S" firstAttribute="leading" secondItem="enC-mT-mgn" secondAttribute="leadingMargin" id="SEG-oL-1VR"/>
+            </constraints>
+            <connections>
+                <outlet property="cancelButton" destination="8xD-LB-mdL" id="GYo-e4-W7D"/>
+                <outlet property="closeButton" destination="qyi-KR-SQP" id="x7o-j7-2NG"/>
+                <outlet property="contentContainer" destination="Ycf-gE-n5S" id="032-Sl-ug0"/>
+                <outlet property="emailTextField" destination="dBE-5M-DDg" id="PCY-xf-hOI"/>
+                <outlet property="largeCancelButton" destination="K97-ON-sbu" id="bD8-sP-cP5"/>
+                <outlet property="messageLabel" destination="mvr-dQ-ZdA" id="BaD-rt-EJY"/>
+            </connections>
+            <point key="canvasLocation" x="309" y="279"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="close" width="18" height="18"/>
+    </resources>
+</document>

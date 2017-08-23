@@ -1,0 +1,244 @@
+//
+//  Story.m
+//  TalentTribe
+//
+//  Created by Bogdan Andresyuk on 3/24/15.
+//  Copyright (c) 2015 OnOApps. All rights reserved.
+//
+
+#import "Story.h"
+#import "StoryCategory.h"
+#import "Author.h"
+#import "Company.h"
+
+#define kAppStory @"appStory"
+
+@implementation Story
+
+- (id)initWithDictionary:(NSDictionary *)dict {
+    self = [super init];
+    if (self) {
+        if (dict) {
+            self.storyId = [dict objectForKeyOrNil:kStoryId] ?: [[NSProcessInfo processInfo] globallyUniqueString];
+            if (self.storyId) {
+                NSDictionary *tempDict = [dict objectForKeyOrNil:kAppStory];
+                if (tempDict) {
+                    dict = tempDict;
+                }
+                self.storyTitle = [dict objectForKeyOrNil:kTitle];
+
+                
+                self.storyType = [Story storyTypeForString:[dict objectForKeyOrNil:kStoryType]];
+                self.storyContent = [dict objectForKeyOrNil:kContent];
+                self.storyCommentsNum = [dict objectForKeyOrNil:kCommentsNum];
+                NSArray *categoriesDict = [dict objectForKeyOrNil:kCategories];
+                NSMutableArray *categoriesContainer = [NSMutableArray new];
+                
+                if (categoriesDict) {
+                    for (id object in categoriesDict) {
+                        if ([object isKindOfClass:[NSDictionary class]]) {
+                            NSDictionary *categoryDict = (NSDictionary *)object;
+                            [categoriesContainer addObject:[[StoryCategory alloc] initWithDictionary:categoryDict]];
+                        }
+                    }
+                }
+                
+                self.categories = categoriesContainer.count ? categoriesContainer : nil;
+                
+                NSMutableArray *imagesContainer = [NSMutableArray new];
+                
+                NSArray *imagesArray = [dict objectForKeyOrNil:kImages];
+                NSArray *fullImagesArray = [dict objectForKeyOrNil:kFullImages];
+                
+                if (imagesArray && fullImagesArray) {
+                    if (imagesArray.count == fullImagesArray.count) {
+                        for (NSInteger i = 0; i < imagesArray.count; i++) {
+                            id imageObject = [imagesArray objectAtIndex:i];
+                            id fullImageObject = [fullImagesArray objectAtIndex:i];
+                            if ([imageObject isKindOfClass:[NSString class]] && [fullImageObject isKindOfClass:[NSString class]]) {
+                                NSString *imageString = (NSString *)imageObject;
+                                NSString *fullImageString = (NSString *)fullImageObject;
+                                NSURL *imageUrl = [NSURL URLWithString:imageString];
+                                NSURL *fullImageUrl = [NSURL URLWithString:fullImageString];
+                                if (imageUrl && imageUrl.scheme && imageUrl.host && fullImageUrl && fullImageUrl.scheme && fullImageUrl.host) {
+                                    [imagesContainer addObject:@{kRegularImage : imageString, kFullscreenImage: fullImageString}];
+                                }
+/*#warning REMOVE
+                                [imagesContainer addObject:@{kRegularImage : @"https://storage.googleapis.com/tt-images/story/img_2015092013264760_ORIGFILE_SD.jpg"}];
+                                [imagesContainer addObject:@{kRegularImage : @"https://storage.googleapis.com/tt-images/story/img_2015091417481711_ORIGFILE_SD.jpg"}];
+                                [imagesContainer addObject:@{kRegularImage : @"https://storage.googleapis.com/tt-images/story/img_2015091405351501_ORIGFILE_SD.jpg"}];
+                                [imagesContainer addObject:@{kRegularImage : @"https://storage.googleapis.com/tt-images/story/img_2015091405420749_ORIGFILE_SD.jpg"}];*/
+                            }
+                        }
+                    }
+                }
+                
+                self.storyImages = imagesContainer.count ? imagesContainer : nil;
+                
+                /*NSArray *imagesDict = [dict objectForKeyOrNil:kImages];
+                NSMutableArray *imagesContainer = [NSMutableArray new];
+                
+                if (imagesDict) {\
+                    for (id object in imagesDict) {
+                        if ([object isKindOfClass:[NSString class]]) {
+                            NSString *imageString = (NSString *)object;
+                            NSURL *url = [NSURL URLWithString:imageString];
+                            if (url && url.scheme && url.host) {
+                                [imagesContainer addObject:@{kRegularImage : imageString}];
+                            }
+                        } else if ([object isKindOfClass:[NSDictionary class]]) {
+                            NSDictionary *imagesDict = (NSDictionary *)object;
+                            if ([imagesDict objectForKeyOrNil:kRegularImage] && [imagesDict objectForKeyOrNil:kFullscreenImage]) {
+                                [imagesContainer addObject:imagesDict];
+                            }
+                        }
+                    }
+                }*/
+                
+                if ([dict objectForKeyOrNil:kAuthor]) {
+                    self.author = [[Author alloc] initWithDictionary:[dict objectForKeyOrNil:kAuthor]];
+                }
+                
+                if ([dict objectForKeyOrNil:kLastUpdateTime]) {
+                    self.storyUpdateTime = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKeyOrNil:kLastUpdateTime] integerValue] / 1000.0f];
+                }
+                
+                self.videoLink = [dict objectForKeyOrNil:kVideoLink];
+                self.likesNum = [[dict objectForKeyOrNil:kLikesNum] integerValue];
+                self.commentsNum = [[dict objectForKeyOrNil:kCommentsNum] integerValue];
+                self.userLike = [[dict objectForKeyOrNil:kUserLike] boolValue];
+                
+                if ([dict objectForKeyOrNil:kCompany]) {
+                    NSDictionary *companyDict = [dict objectForKeyOrNil:kCompany];
+                    self.companyId =  [companyDict objectForKeyOrNil:kCompanyId];
+                    self.companyName =  [companyDict objectForKeyOrNil:kCompanyName];
+                    self.companyLogo =  [companyDict objectForKeyOrNil:kCompanyLogo];
+                }
+            } else {
+                return nil;
+            }
+        }
+    }
+    return self;
+}
+
++(void)publishStoryFromDict:(NSDictionary *)dict completionHandler:(SimpleCompletionBlock)completion
+{
+    if (!dict)
+    {
+        [TTActivityIndicator dismiss];
+        return;
+    }
+    
+    Story *storyToPublish = [[Story alloc]init];
+    storyToPublish.storyId = [[NSProcessInfo processInfo] globallyUniqueString];
+    
+    if ([dict objectForKeyOrNil:kTitle])
+    {
+        storyToPublish.storyTitle = [dict objectForKeyOrNil:kTitle];
+    }
+    if ([dict objectForKeyOrNil:kContent])
+    {
+        storyToPublish.storyContent = [dict objectForKeyOrNil:kContent];
+    }
+    if ([dict objectForKeyOrNil:kCategories])
+    {
+        storyToPublish.categories = [dict objectForKeyOrNil:kCategories];
+    }
+    if ([dict objectForKeyOrNil:kStoryType])
+    {
+<<<<<<< HEAD
+        storyToPublish.storyType = (int)[dict objectForKeyOrNil:kStoryType] ? StoryTypeStory : (int)[dict objectForKeyOrNil:kStoryType];
+=======
+        storyToPublish.storyType = [[dict objectForKeyOrNil:kStoryType] intValue];
+>>>>>>> asi
+    }
+    if ([dict objectForKeyOrNil:kImages])
+    {
+        storyToPublish.storyImages = [dict objectForKeyOrNil:kImages];
+    }
+    if ([dict objectForKey:kVideoLink])
+    {
+        storyToPublish.videoLink = [dict objectForKey:kVideoLink];
+    }
+    
+    // Handle company
+    if ([dict objectForKeyOrNil:kCompany])
+    {
+        Company *company = [dict objectForKeyOrNil:kCompany];
+        if (company.companyId.length > 0)
+        {
+            storyToPublish.companyId = company.companyId;
+        }
+        
+        if (company.companyLogo.length > 0)
+        {
+           storyToPublish.companyLogo = company.companyLogo;
+        }
+        
+        if (company.companyName.length > 0)
+        {
+            storyToPublish.companyName = company.companyName;
+        }
+    }
+    
+    [[DataManager sharedManager] addStory:storyToPublish anonymously:NO completionHandler:^(BOOL success, NSError *error)
+     {
+         if (!completion)
+         {
+             [TTActivityIndicator dismiss];
+             return;
+         }
+         completion(success,error);
+     }];
+}
+
+
++ (StoryType)storyTypeForString:(NSString *)string {
+    if ([string isEqualToString:[Story stringForStoryType:StoryTypeStory]]) {
+        return StoryTypeStory;
+    } else if ([string isEqualToString:[Story stringForStoryType:StoryTypeLink]]) {
+        return StoryTypeLink;
+    } else if ([string isEqualToString:[Story stringForStoryType:StoryTypeQuestion]]) {
+        return StoryTypeQuestion;
+    } else if ([string isEqualToString:[Story stringForStoryType:StoryTypeMultimedia]]) {
+        return StoryTypeMultimedia;
+    } else if ([string isEqualToString:[Story stringForStoryType:StoryTypeHardFacts]]) {
+        return StoryTypeHardFacts;
+    } else if ([string isEqualToString:[Story stringForStoryType:StoryTypeOfficePhotos]]) {
+        return StoryTypeOfficePhotos;
+    }
+    return StoryTypeStory;
+}
+
++ (NSString *)stringForStoryType:(StoryType)type {
+    switch (type) {
+        case StoryTypeStory: {
+          return @"STORY";
+        } break;
+        case StoryTypeLink: {
+            return @"LINK";
+        } break;
+        case StoryTypeQuestion: {
+            return @"QUESTION";
+        } break;
+        case StoryTypeMultimedia: {
+            return @"MULTIMEDIA";
+        } break;
+        case StoryTypeHardFacts: {
+            return @"HARD_FACTS";
+        } break;
+        case StoryTypeOfficePhotos: {
+            return @"OFFICE_PHOTOS";
+        } break;
+        default: {
+            return nil;
+        } break;
+    }
+}
+
++ (NSDictionary *)companyDictFromStoryDict:(NSDictionary *)dict {
+    return [dict objectForKeyOrNil:kCompany];
+}
+
+@end

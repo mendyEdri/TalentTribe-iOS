@@ -1,0 +1,109 @@
+PODS:
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - Bolts (1.7.0):
+    - Bolts/AppLinks (= 1.7.0)
+    - Bolts/Tasks (= 1.7.0)
+  - Bolts/AppLinks (1.7.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.7.0)
+  - Crashlytics (3.7.2):
+    - Fabric (~> 1.6.3)
+  - DNDDragAndDrop (1.1.3)
+  - Fabric (1.6.7)
+  - FBSDKCoreKit (4.13.1):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.13.1):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.13.1):
+    - FBSDKCoreKit
+  - FDKeychain (1.3.0)
+  - FrameAccessor (2.0)
+  - GoogleAPIClientForREST (1.0.1):
+    - GoogleAPIClientForREST/Core (= 1.0.1)
+    - GTMSessionFetcher (>= 1.1.3, ~> 1.1)
+  - GoogleAPIClientForREST/Core (1.0.1):
+    - GTMSessionFetcher (>= 1.1.3, ~> 1.1)
+  - GTMSessionFetcher (1.1.4):
+    - GTMSessionFetcher/Full (= 1.1.4)
+  - GTMSessionFetcher/Core (1.1.4)
+  - GTMSessionFetcher/Full (1.1.4):
+    - GTMSessionFetcher/Core (= 1.1.4)
+  - IHKeyboardDismissing (1.1)
+  - IOSLinkedInAPI (2.0.0):
+    - AFNetworking (>= 2.0.0)
+  - JTMaterialSpinner (1.0.2)
+  - Mixpanel (3.0.0):
+    - Mixpanel/Mixpanel (= 3.0.0)
+  - Mixpanel/Mixpanel (3.0.0)
+  - NSData+MD5Digest (1.0.0)
+  - SDWebImage (3.8.1):
+    - SDWebImage/Core (= 3.8.1)
+  - SDWebImage/Core (3.8.1)
+  - TURecipientBar (2.0.2)
+  - UIAlertView-Blocks (1.0)
+
+DEPENDENCIES:
+  - AFNetworking (~> 2.5)
+  - Crashlytics
+  - DNDDragAndDrop (~> 1.1.0)
+  - Fabric
+  - FBSDKCoreKit (~> 4.13)
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - FDKeychain (~> 1.2)
+  - FrameAccessor (~> 2.0)
+  - GoogleAPIClientForREST (~> 1.0)
+  - IHKeyboardDismissing (~> 1.1)
+  - IOSLinkedInAPI (~> 2.0)
+  - JTMaterialSpinner (~> 1.0)
+  - Mixpanel
+  - NSData+MD5Digest (~> 1.0)
+  - SDWebImage (~> 3.7)
+  - TURecipientBar (~> 2.0)
+  - UIAlertView-Blocks (~> 1.0)
+
+SPEC CHECKSUMS:
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  Crashlytics: 130ab943f8c78cda7a814b434f270b2e2c8a3cba
+  DNDDragAndDrop: 34cada1f3bf83acc1ec21075d156d99688ce23e3
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
+  FBSDKCoreKit: 2807fe0da2ddb49a1469da6d6ff597f99912980f
+  FBSDKLoginKit: 6d350cb6a22d6956e9d078885de6ee8a0ebc51b4
+  FBSDKShareKit: c9438df7573b33780ac8c3451201c5ebb260ffca
+  FDKeychain: bd010f28f97ffe7068b3421b77d162b5c2531d61
+  FrameAccessor: 443a13e58e23a10ff22180da0897b28c3f6abf66
+  GoogleAPIClientForREST: dfe838db7e0c20ced354549d49c81e18674a64c6
+  GTMSessionFetcher: 174bc61d5238f81f9ddb807b0b0170420f67de85
+  IHKeyboardDismissing: 7c23d41da51ca22f6a1091b3cf852821a2461ac9
+  IOSLinkedInAPI: d0adc664472d471b0df9b2aad92a2d82de926c40
+  JTMaterialSpinner: f9e825c80317023f479b7ecc2856785280d8a8c5
+  Mixpanel: ac92056ee35a961362513ba11049e67cffcaa1f1
+  NSData+MD5Digest: 0743d53874455e2bdf49f70e7f815b0b963a355f
+  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
+  TURecipientBar: d701cfb1413b212169bdfc30de1721c7da0e15fc
+  UIAlertView-Blocks: 7904744fca618afbd2ec646608924f5e69d5acd1
+
+PODFILE CHECKSUM: e22e320a6b75538fe4d2f4b11052d67bfcd7caf0
+
+COCOAPODS: 1.0.1

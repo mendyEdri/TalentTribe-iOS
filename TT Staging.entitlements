@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:www.talenttribe.me</string>
+		<string>applinks:qaserver.talenttribe.me</string>
+		<string>applinks:talenttribe.me</string>
+		<string>applinks:stageserver2.talenttribe.me</string>
+		<string>applinks:prodserver.talenttribe.me</string>
+		<string>applinks:talenttribe.com</string>
+	</array>
+</dict>
+</plist>

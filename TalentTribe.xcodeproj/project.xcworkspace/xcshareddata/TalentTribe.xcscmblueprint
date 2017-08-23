@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "4406CD5F385C6BA225A559AE0BAC13B01944CF44",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "3E8F2E3BC75E382E36D961751BD8D60F7B05726D" : 0,
+    "4406CD5F385C6BA225A559AE0BAC13B01944CF44" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F925A98C-26F5-41CA-91FC-20FF36A822B2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "3E8F2E3BC75E382E36D961751BD8D60F7B05726D" : "talenttribe",
+    "4406CD5F385C6BA225A559AE0BAC13B01944CF44" : "tt_ios_master\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "TalentTribe",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "TalentTribe.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/OnOApps\/talenttribe.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3E8F2E3BC75E382E36D961751BD8D60F7B05726D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/talenttribeltd\/tt_ios_master.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4406CD5F385C6BA225A559AE0BAC13B01944CF44"
+    }
+  ]
+}
